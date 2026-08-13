@@ -58,7 +58,6 @@
   .chip.fu{background:rgba(240,168,104,.1);color:var(--zhong);border-color:rgba(240,168,104,.45);border-style:dashed}
   .chip.jia0{background:rgba(150,156,170,.16);color:#b9bdc8;border-color:rgba(150,156,170,.45);border-style:dashed}
   .chip.jia5{background:rgba(168,120,255,.16);color:#c9a9ff;border-color:rgba(168,120,255,.5)}
-  .chip i{font-style:normal;font-size:11px;opacity:.7;margin-left:2px}
   .xiong{background:rgba(255,107,107,.14);color:var(--xiong);border-color:rgba(255,107,107,.35)}
   .score{position:absolute;top:14px;right:14px;font-size:13px;font-weight:700;padding:3px 10px;border-radius:20px}
   .s-good{background:rgba(62,207,142,.18);color:var(--ji)}
@@ -323,7 +322,7 @@
           <tr><td class="arr">绝命尾</td><td class="yi">100%判凶，财来财去做嫁衣、不利子女</td></tr>
           <tr><td class="arr">五鬼尾</td><td class="yi">第一大凶星，婚败分居守不住财，绝对不可用</td></tr>
           <tr><td class="arr">祸害尾</td><td class="yi">祸从口出官非；117重、23/32弱</td></tr>
-          <tr><td class="arr">延年尾(19/91)</td><td class="yi">守财奴吝啬；女命19累到最后一场空</td></tr>
+          <tr><td class="arr">延年尾(19/91)</td><td class="yi">守财奴吝啬；女命19累到最后一场空（女命破婚见尾宫断语）</td></tr>
           <tr><td class="arr">天医尾</td><td class="yi">能赚能花、桃花旺</td></tr>
           <tr><td class="arr">生气尾</td><td class="yi">懒散老板潜质、贵人多</td></tr>
           <tr><td class="arr">六煞尾</td><td class="yi">爱美异性缘旺偏桃花、男人破婚</td></tr>
@@ -336,10 +335,10 @@
         <thead><tr><th>组合</th><th>铁口断语</th></tr></thead>
         <tbody>
           <tr><td class="arr">绝命+五鬼<br><span class="muted">218/812/2018…</span></td><td class="yi">宇宙最大凶数——事业感情财运健康全败、重疾</td></tr>
-          <tr><td class="arr">五鬼+六煞<br><span class="muted">618/816</span></td><td class="yi">婚姻有变、婚外情三角恋</td></tr>
+          <tr><td class="arr">五鬼+六煞<br><span class="muted">618/816（尾宫/后四位）</span></td><td class="yi">婚姻有变、婚外情三角恋（仅尾宫判结局）</td></tr>
           <tr><td class="arr">祸害+五鬼<br><span class="muted">718/817/71…</span></td><td class="yi">飞来横祸大凶、血光意外</td></tr>
-          <tr><td class="arr">天医夹0<br><span class="muted">103/301/608/806</span></td><td class="yi">用三年以上必现婚外情/地下情</td></tr>
-          <tr><td class="arr">女用延年破婚号</td><td class="yi">19/91/159/951/87/78/857/758 等：强势压夫婚姻危机</td></tr>
+          <tr><td class="arr">天医夹0<br><span class="muted">103/301/608/806（尾宫/后四位）</span></td><td class="yi">用三年以上必现婚外情/地下情（仅尾宫判）</td></tr>
+          <tr><td class="arr">女用延年破婚号<br><span class="muted">尾宫/后四位·女用</span></td><td class="yi">19/91/159/951/87/78/857/758 等：强势压夫婚姻危机（仅女用·尾宫判）</td></tr>
         </tbody>
       </table>
     </div>
@@ -524,9 +523,17 @@ function analyze(raw){
   // —— 整体阴阳判定（0阴5阳；先天河图奇阳偶阴；吉星阳/凶星阴/伏位中）——
   const digitYang=(rest.match(/[13579]/g)||[]).length;
   const digitYin =(rest.match(/[02468]/g)||[]).length;
-  // 阴阳强弱等级：出现1个=弱、2个=中、3个=极、≥4个=物极必反（阴阳转化）
-  const dyLevel = digitYang>=4?'物极必反':(digitYang===3?'极':(digitYang===2?'中':'弱'));
-  const dxLevel = digitYin>=4?'物极必反':(digitYin===3?'极':(digitYin===2?'中':'弱'));
+  // —— 数字奇偶阴阳（河图奇阳偶阴）：仅描述「数字能量配比」，不套用「物极必反」——
+  // 以 8 位中 4奇4偶=均平 为中心，偏离越大越偏；物极必反属「星性」概念（见 yinYangType）
+  const digitLevel = c=>{
+    const dev=Math.abs(c-4);
+    if(dev===0) return '均平';
+    if(dev===1) return c>4?'偏阳':'偏阴';
+    if(dev===2) return c>4?'显阳':'显阴';
+    return c>4?'极阳':'极阴';
+  };
+  const dyLevel = digitLevel(digitYang);
+  const dxLevel = digitLevel(digitYin);
   let yinYangType='阴阳平衡';
   if(ji>=5 && xiong===0){ yinYangType='纯阳·物极必反'; }
   else if(xiong>=5 && ji===0){ yinYangType='纯阴·孤阴不生'; }
@@ -538,10 +545,10 @@ function analyze(raw){
     if(tail2==='05'||tail2==='50'){ penalty-=8; pn.push('05/50结尾皆空−8'); }
     if(tailStar==='绝命'){ penalty-=10; pn.push('绝命结尾破财号−10'); }
     if(tailStar==='五鬼'){ penalty-=8; pn.push('五鬼结尾第一大凶−8'); }
-    if(tailStar==='六煞'){ penalty-=5; pn.push('六煞结尾男人破婚−5'); }
+    if(tailStar==='六煞'){ penalty-=5; pn.push('六煞结尾'+(gender==='m'?'男人破婚':'偏桃花情绪')+'−5'); }
     if(tailStar==='祸害'){ penalty-=6; pn.push('祸害结尾口舌官非−6'); }
     if(z0>=2){ penalty-=8; pn.push('0≥2变数多−8'); }
-    ['103','301','608','806'].forEach(p=>{ if(rest.includes(p)){ penalty-=8; pn.push(`${p}天医夹0婚变−8`); }});
+    ['103','301','608','806'].forEach(p=>{ if(rest.slice(-4).includes(p)){ penalty-=8; pn.push(`${p}天医夹0婚变−8`); }});
     // 阴阳定论（性别极性）
     if(gender!=='x'){
       const yang=(rest.match(/[1357]/g)||[]).length;
@@ -550,7 +557,7 @@ function analyze(raw){
       if(gender==='m' && yin>=5){ penalty-=6; pn.push('男用阴号(女化)−6'); }
       if(gender==='f'){
         const broken=['19','91','87','78','109','901','159','951','857','758'];
-        if(broken.some(p=>rest.includes(p))){ penalty-=8; pn.push('女用延年破婚号−8'); }
+        if(broken.some(p=>rest.slice(-4).includes(p))){ penalty-=8; pn.push('女用延年破婚号−8'); }
       }
     }
     // 三数成象
@@ -701,6 +708,8 @@ function analyze(raw){
           tailScore,capScore,zhiScore,patternScore,balanceScore,profScore,typeTag,seg,zhikouXG,zhikouMain};
 }
 const STAR_DESC={'天医':'正财·正桃花','延年':'事业·能力','生气':'贵人·乐天','伏位':'稳定·蓄力','绝命':'冲动·破财','五鬼':'变动·血光','六煞':'偏桃花·情绪','祸害':'口舌·是非'};
+// 号码排序表「最佳」徽标文案：与 #sortField 选项保持一致（评分随所选职业权重变化，最高分者即该维度最佳）
+const SORT_LABEL={'评分':'通用评分最佳','sales':'销售 / 公关最佳','tech':'技术 / 研发最佳','manage':'管理 / 体制最佳','creative':'创意 / 策划最佳','startup':'创业 / 投资最佳'};
 // 能量走势：一条固定长度横线 + 四个刻度分出早/中/晚三段区间，按长短(能量强弱)与好坏(绿吉红凶)着色
 function trendChart(seg){
   const maxAbs=Math.max(1,...seg.map(Math.abs));
@@ -725,17 +734,14 @@ function buildZhikouXG(r){
   // —— 尾号定结局（最高优先级）——
   if(r.endZero) push('0结尾：万事一场空，四空必有一空','high');
   else if(tail2==='05'||tail2==='50') push('05/50结尾：到头皆空，白忙一场','high');
-  else if(st2==='绝命') push('绝命结尾：财来财去做嫁衣，90%可断此号凶','high');
+  else if(st2==='绝命') push('绝命结尾：财来财去做嫁衣，100%可断此号凶','high');
   else if(st2==='五鬼') push('五鬼结尾：第一大凶星，婚败分居守不住财，绝对不可用','high');
   else if(st2==='祸害'){
     const strong=['17','71','89','98'].includes(tail2);
     push(strong?'祸害结尾(强)：祸从口出、官非伤灾多':'祸害结尾(弱)：平时多争执，伤不大，谨言即可','mid');
   }
-  else if(st2==='六煞') push('六煞结尾：异性缘旺偏桃花，男人易破婚','mid');
-  else if(st2==='延年'){
-    if(gender==='f'&&['19','91','87','78'].includes(tail2)) push('女用延年结尾：强势累己、易破婚','high');
-    else push('延年结尾：守财奴、太吝啬，交往易吃亏','info');
-  }
+  else if(st2==='六煞') push('六煞结尾：异性缘旺偏桃花'+(gender==='m'?'，男人易破婚':''),'mid');
+      else if(st2==='延年') push('延年结尾：守财奴、太吝啬，交往易吃亏','info');
   else if(st2==='天医') push('天医结尾：能赚能花，桃花旺','info');
   else if(st2==='生气') push('生气结尾：懒散有老板潜质，贵人多助','info');
   // —— 0/5 铁口 ——
@@ -747,14 +753,15 @@ function buildZhikouXG(r){
     if(/夹0隐藏/.test(n)&&/凶星更毒/.test(n)) push('夹0藏凶：隐形磁场，凶星更毒（暗箭难防）','mid');
     if(/夹5凸显/.test(n)) push('夹5放大：能量翻倍，吉凶皆放大','mid');
   });
-  // —— 特定凶组直断（DANGER4 图标组合 + 滑动相邻检测）——
+  // —— 特定凶组直断 ——
+  // 绝命+五鬼(宇宙最大凶数) / 祸害+五鬼(飞来横祸)：体系共识最凶组合，全域触发（不拘位置）
+  // 五鬼+六煞(婚外情三角恋)：婚姻结局 → 仅锚定尾宫(后四位)，中间段不判（位置铁律：尾数=结果）
   const DANGER4={
     '218':'绝命+五鬼·宇宙最大凶数','812':'绝命+五鬼·宇宙最大凶数',
     '2518':'绝命+五鬼·宇宙最大凶数','2158':'绝命+五鬼·宇宙最大凶数',
     '8512':'绝命+五鬼·宇宙最大凶数','8152':'绝命+五鬼·宇宙最大凶数',
     '2018':'绝命+五鬼·宇宙最大凶数','2108':'绝命+五鬼·宇宙最大凶数',
     '8012':'绝命+五鬼·宇宙最大凶数','8102':'绝命+五鬼·宇宙最大凶数',
-    '618':'五鬼+六煞·婚外情三角恋','816':'五鬼+六煞·婚外情三角恋',
     '718':'祸害+五鬼·飞来横祸','817':'祸害+五鬼·飞来横祸',
     '7118':'祸害+五鬼·飞来横祸','8117':'祸害+五鬼·飞来横祸',
     '8017':'祸害+五鬼·飞来横祸','7018':'祸害+五鬼·飞来横祸',
@@ -769,14 +776,20 @@ function buildZhikouXG(r){
     if(a&&b){
       const tri=rest.slice(i,i+3); if(seen.has(tri)) continue;
       if((a==='绝命'&&b==='五鬼')||(a==='五鬼'&&b==='绝命')){ seen.add(tri); push(`${tri}：绝命+五鬼·宇宙最大凶数`,'high'); }
-      else if((a==='五鬼'&&b==='六煞')||(a==='六煞'&&b==='五鬼')){ seen.add(tri); push(`${tri}：五鬼+六煞·婚外情三角恋`,'mid'); }
+      else if((a==='五鬼'&&b==='六煞')||(a==='六煞'&&b==='五鬼')){ seen.add(tri); /*婚姻结局→仅尾宫判定，下方统一处理*/ }
       else if((a==='祸害'&&b==='五鬼')||(a==='五鬼'&&b==='祸害')){ seen.add(tri); push(`${tri}：祸害+五鬼·飞来横祸`,'high'); }
     }
   }
-  // —— 天医夹0婚变 ——
-  ['103','301','608','806'].forEach(p=>{ if(rest.includes(p)) push(`${p}：天医夹0，婚外情/地下情（用三年以上应验）`,'mid'); });
-  // —— 女用延年破婚号（与 analyze 扣分逻辑一致：后八位含延年破婚数组即判）——
-  if(gender==='f' && BROKEN_F.some(p=>rest.includes(p))) push('女用延年破婚号：强势压夫、婚姻危机','high');
+  // 五鬼+六煞·婚外情三角恋（婚姻结局 · 仅尾宫/后四位）
+  const tail4=rest.slice(-4);
+  for(let i=0;i<tail4.length-2;i++){
+    const a=starAt(tail4.slice(i,i+2)), b=starAt(tail4.slice(i+1,i+3));
+    if((a==='五鬼'&&b==='六煞')||(a==='六煞'&&b==='五鬼')){ push(`${tail4.slice(i,i+3)}（尾宫）：五鬼+六煞·婚外情三角恋`,'mid'); break; }
+  }
+  // —— 天医夹0婚变（婚姻结局 → 锚定尾宫/后四位，与女用延年破婚号同原则；中间段不判）——
+  ['103','301','608','806'].forEach(p=>{ if(rest.slice(-4).includes(p)) push(`${p}（尾宫）：天医夹0，婚外情/地下情（用三年以上应验）`,'mid'); });
+  // —— 女用延年破婚号（尾宫/后四位·与 analyze 扣分逻辑一致）：女用且延年破婚数组落在尾宫即判；前四位(中间段)不判。位置铁律：尾数=结果、后四位能量占70%、尾宫号最强 ——
+  if(gender==='f' && BROKEN_F.some(p=>rest.slice(-4).includes(p))) push('女用延年破婚号（尾宫）：强势压夫、婚姻危机','high');
   // —— 整体阴阳铁口 ——
   if(r.yinYangType.indexOf('纯阳')>=0) push('全吉星≠好：纯阳过刚、物极必反','mid');
   else if(r.yinYangType.indexOf('纯阴')>=0) push('全凶星：孤阴不生，大凶','high');
@@ -869,7 +882,7 @@ function render(){
         return `<span class="chip ${cls}" title="${s.star}：${ttl}${s.tail?'（尾宫·能量最强）':''}"><b>${s.star}</b></span>`;
       }
       if(s.kind==='fu'){
-        return `<span class="chip fu" title="伏位（0/5在首尾：隐藏/延续·凸显）"><b>伏位</b><i>${s.mark}</i></span>`;
+        return `<span class="chip fu" title="伏位（0/5在首尾：隐藏/延续·凸显）"><b>伏位${s.mark}</b></span>`;
       }
       if(s.parent){
         const d = JIA_DESC[s.parent] || {};
@@ -877,7 +890,7 @@ function render(){
         const lbl = `${s.parent}夹${s.mark}`;
         const pol = s.kind==='jia0' ? '阴·隐藏/压下/潜伏（磁场藏于内部）' : '阳·显性/桥梁/爆发/放大';
         const ttl = `${lbl}：${m} ［${pol}］`;
-        return `<span class="chip ${s.kind}" title="${ttl}"><b>${lbl}</b><i>${s.mark}</i></span>`;
+        return `<span class="chip ${s.kind}" title="${ttl}"><b>${lbl}</b></span>`;
       }
       const lbl = s.kind==='jia0' ? '夹0' : '夹5';
       const ttl = s.kind==='jia0' ? '夹0：隐藏/空亡（凶星更毒，吉星套牢）' : '夹5：凸显/放大（能量放大一倍）';
@@ -900,7 +913,7 @@ function render(){
         <div class="chips">${chips||'<span class="meta">无有效星</span>'}</div>
         <div class="meta" style="margin-top:10px">吉${r.ji} · 凶${r.xiong} · 中${r.zhong} ｜ 天医(财)×${r.cai} ｜ 夹星/伏位×${r.slots.filter(s=>s.kind!=='star').length}</div>
         <div class="meta" style="margin-top:5px;font-size:12px;opacity:.85">大小能量：${r.levelStr}</div>
-        <div class="meta" style="margin-top:3px;font-size:12px;opacity:.85">阴阳：阳${r.digitYang}(${r.dyLevel}) · 阴${r.digitYin}(${r.dxLevel}) ｜ ${r.yinYangType}</div>
+        <div class="meta" style="margin-top:3px;font-size:12px;opacity:.85">星性阴阳：<b>${r.yinYangType}</b>　｜　数字奇偶(河图)：阳${r.digitYang}(${r.dyLevel}) · 阴${r.digitYin}(${r.dxLevel})</div>
         <div class="meta" style="margin-top:6px;font-size:12px;opacity:.85">评分构成：${r.comps.join('　')}</div>
         <div class="meta" style="margin-top:3px;font-size:12px;opacity:.85">制化提示：${r.zhihua&&r.zhihua.length?r.zhihua.join('；'):'—'}</div>
         ${zkHtml}
@@ -910,6 +923,9 @@ function render(){
       </div>`);
   });
   const best = [...results].sort((a,b)=> b.score-a.score)[0];
+  const sfEl = document.getElementById('sortField');
+  const sfVal = sfEl ? sfEl.value : '评分';
+  const bestLabel = SORT_LABEL[sfVal] || '通用评分最佳';
   const sorted = sortResults(results);
   const tb = document.querySelector('#table tbody'); tb.innerHTML='';
   sorted.forEach(r=>{
@@ -917,7 +933,7 @@ function render(){
     const isBest = r===best;
     tb.insertAdjacentHTML('beforeend',`
       <tr>
-        <td style="text-align:center">${isBest?'<span class="tag badge-best">通用评分最佳</span>':''}</td>
+        <td style="text-align:center">${isBest?'<span class="tag badge-best">'+bestLabel+'</span>':''}</td>
         <td class="num clickable" title="点击填入流年/流月输入栏" onclick="fillFlow('${r.raw}')">${r.raw}</td>
         <td style="color:var(--ji)">${r.ji}</td>
         <td style="color:var(--xiong)">${r.xiong}</td>
