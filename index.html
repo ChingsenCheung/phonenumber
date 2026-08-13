@@ -419,6 +419,17 @@ function parseZeroFive(rest){
   for(let i=0;i<n-1;i++){ if(rest[i]==='5'&&rest[i+1]==='5'){ paired5=true; notes.push('双5相连：能量拖延（财富/事业晚到，为凶）'); break; } }
   return {notes,endZero,mid0,single5,paired5,hidden};
 }
+// 夹0夹5逐星象意（课程 28–36 集《夹0夹5》）：夹5=阳·显性/桥梁/爆发/放大；夹0=阴·隐藏/压下/潜伏（磁场藏于内部）
+const JIA_DESC = {
+  '天医': {jia5:'财富明显、延续、增强', jia0:'财富看不见/套牢/地下情、夫妻分居'},
+  '延年': {jia5:'表现自己、能力增强、压力大、有方向', jia0:'工作能力减弱'},
+  '生气': {jia5:'贵人明显出现、显露开心', jia0:'贵人隐藏/看不见、开心不起来'},
+  '伏位': {jia5:'忍耐保守显现、延长', jia0:'保守隐藏、看不见'},
+  '绝命': {jia5:'赌性强、主动投资、敢作决定', jia0:'被动（相对减弱冲动）'},
+  '五鬼': {jia5:'血光明显、主动分手、第六感强', jia0:'变动隐藏'},
+  '六煞': {jia5:'更犹豫、偏桃花明显、皮肤/肠胃问题显', jia0:'纠结隐藏、皮肤病'},
+  '祸害': {jia5:'易发脾气、小人出现、体质差', jia0:'口舌隐藏'}
+};
 function analyze(raw){
   const digits = raw.replace(/\D/g,'');
   const rest = digits.slice(3);
@@ -442,9 +453,30 @@ function analyze(raw){
       const mid = (a==='0'||a==='5') ? a : b;
       const isFu = atHead || atTail;
       const kind = isFu ? 'fu' : (mid==='0'?'jia0':'jia5');
-      slots.push({pair:a+b, star:null, n:'中', tail, kind, mark:mid});
+      // 夹星须归属其两侧的「真实星」（如 153→13天医夹5、109→19延年夹0）；无母星则只是伏位缓冲
+      let parent=null;
+      if(!isFu){
+        const one05 = (a==='0'||a==='5') !== (b==='0'||b==='5'); // 恰好一个为0/5（双0/双5不在此归因）
+        if(one05){
+          const p = (a==='0'||a==='5') ? i : i+1;   // 0/5 所在下标
+          const L=rest[p-1], R=rest[p+1];
+          if(L && R && L!=='0' && L!=='5' && R!=='0' && R!=='5'){
+            const pm=match(L+R);
+            if(pm.star!=='—') parent=pm.star;
+          }
+        }
+      }
+      slots.push({pair:a+b, star:null, n:'中', tail, kind, mark:mid, parent});
     }
   }
+  // 合并被同一 0/5 夹住的两对：如 451→45+51 归并为「41生气夹5」（一星一夹事件，而非两个夹5）
+  const _merged=[];
+  for(const s of slots){
+    const prev=_merged[_merged.length-1];
+    if(s.kind!=='fu' && s.parent && prev && prev.kind===s.kind && prev.parent===s.parent && prev.mark===s.mark) continue;
+    _merged.push(s);
+  }
+  slots.length=0; _merged.forEach(s=>slots.push(s));
   const codes = pairs.map(p=>({star:p.star,n:p.n,pair:p.pair}));
   const counts={}; for(const k in STARS){ counts[k]=codes.filter(c=>c.star===k).length; }
   const ji = codes.filter(c=>c.n==='吉').length;
@@ -838,6 +870,14 @@ function render(){
       }
       if(s.kind==='fu'){
         return `<span class="chip fu" title="伏位（0/5在首尾：隐藏/延续·凸显）"><b>伏位</b><i>${s.mark}</i></span>`;
+      }
+      if(s.parent){
+        const d = JIA_DESC[s.parent] || {};
+        const m = s.kind==='jia0' ? (d.jia0||'隐藏/减弱') : (d.jia5||'凸显/放大');
+        const lbl = `${s.parent}夹${s.mark}`;
+        const pol = s.kind==='jia0' ? '阴·隐藏/压下/潜伏（磁场藏于内部）' : '阳·显性/桥梁/爆发/放大';
+        const ttl = `${lbl}：${m} ［${pol}］`;
+        return `<span class="chip ${s.kind}" title="${ttl}"><b>${lbl}</b><i>${s.mark}</i></span>`;
       }
       const lbl = s.kind==='jia0' ? '夹0' : '夹5';
       const ttl = s.kind==='jia0' ? '夹0：隐藏/空亡（凶星更毒，吉星套牢）' : '夹5：凸显/放大（能量放大一倍）';
