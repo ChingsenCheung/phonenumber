@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>七星绝学</title>
+<style>
+  :root{
+    --bg:#0c0f1a; --panel:rgba(255,255,255,.05); --panel-2:rgba(255,255,255,.08);
+    --line:rgba(255,255,255,.12); --txt:#ffffff; --mut:#ffffff;
+    --ji:#3ecf8e; --zhong:#f0a868; --xiong:#ff6b6b; --acc:#5b8cff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:radial-gradient(1200px 700px at 80% -10%,#1a2545 0%,transparent 60%),
+               radial-gradient(900px 600px at -10% 110%,#241a3a 0%,transparent 55%),
+               var(--bg);
+    color:var(--txt);min-height:100vh;padding:28px 18px;line-height:1.6;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-size:24px;font-weight:700;letter-spacing:.5px;
+     background:linear-gradient(90deg,#8fb4ff,#c79bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .glass{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line);
+         border-radius:16px;padding:16px 18px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  input#single{flex:1;min-width:240px;background:var(--panel-2);border:1px solid var(--line);
+    border-radius:10px;color:var(--txt);padding:11px 14px;font-size:15px;
+    font-family:"SFMono-Regular",Consolas,monospace;outline:none}
+  input#single:focus{border-color:var(--acc)}
+  input#single::placeholder{color:var(--mut)}
+  textarea{width:100%;min-height:110px;resize:vertical;background:var(--panel-2);
+    border:1px solid var(--line);border-radius:12px;color:var(--txt);
+    padding:14px;font-size:15px;font-family:"SFMono-Regular",Consolas,monospace;outline:none;margin-top:12px}
+  textarea:focus{border-color:var(--acc)}
+  button{cursor:pointer;border:none;border-radius:10px;padding:11px 22px;font-size:15px;font-weight:600;
+    background:linear-gradient(135deg,#5b8cff,#8a6bff);color:#fff;transition:.2s}
+  button:hover{filter:brightness(1.1);transform:translateY(-1px)}
+  .ghost{background:transparent;border:1px solid var(--line);color:var(--mut)}
+  .gen{font-size:13px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;padding:4px 10px;border:1px solid var(--line);border-radius:8px}
+  .gen input{accent-color:var(--acc)}
+  .chipbar{margin-top:12px;min-height:50px;background:var(--panel-2);border:1px solid var(--line);
+    border-radius:12px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(91,140,255,.16);
+    border:1px solid rgba(91,140,255,.4);color:#ffffff;padding:5px 10px;border-radius:20px;
+    font-family:Consolas,monospace;font-size:13.5px}
+  .chip b{font-weight:600}
+  .chip .x{cursor:pointer;opacity:.55;font-size:15px;line-height:1;padding:0 2px;transition:.15s}
+  .chip .x:hover{opacity:1;color:#fff}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;margin-top:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+  .card h3{font-size:16px;font-family:Consolas,monospace;letter-spacing:1px;margin-bottom:4px}
+  .meta{font-size:12px;color:var(--mut);margin-bottom:10px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:12px;padding:4px 9px;border-radius:8px;border:1px solid transparent;font-weight:600}
+  .ji{background:rgba(62,207,142,.14);color:var(--ji);border-color:rgba(62,207,142,.35)}
+  .zhong{background:rgba(240,168,104,.14);color:var(--zhong);border-color:rgba(240,168,104,.35)}
+  .chip.fu{background:rgba(240,168,104,.1);color:var(--zhong);border-color:rgba(240,168,104,.45);border-style:dashed}
+  .chip.jia0{background:rgba(150,156,170,.16);color:#b9bdc8;border-color:rgba(150,156,170,.45);border-style:dashed}
+  .chip.jia5{background:rgba(168,120,255,.16);color:#c9a9ff;border-color:rgba(168,120,255,.5)}
+  .chip i{font-style:normal;font-size:11px;opacity:.7;margin-left:2px}
+  .xiong{background:rgba(255,107,107,.14);color:var(--xiong);border-color:rgba(255,107,107,.35)}
+  .score{position:absolute;top:14px;right:14px;font-size:13px;font-weight:700;padding:3px 10px;border-radius:20px}
+  .s-good{background:rgba(62,207,142,.18);color:var(--ji)}
+  .s-mid{background:rgba(240,168,104,.18);color:var(--zhong)}
+  .s-bad{background:rgba(255,107,107,.18);color:var(--xiong)}
+  h3.sec{margin-bottom:6px;font-size:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  select#sortField{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;color:var(--txt);
+    padding:6px 10px;font-size:13px;outline:none;cursor:pointer}
+  select#sortField:focus{border-color:var(--acc)}
+  select#sortField option{background:#0c0f1a;color:#ffffff}
+  .btn-s{font-size:12.5px;padding:6px 13px;font-weight:600;background:var(--panel-2);border:1px solid var(--line);
+    color:var(--mut);border-radius:8px}
+  .btn-s:hover{color:var(--txt);border-color:var(--acc)}
+  .btn-s.active{background:linear-gradient(135deg,#5b8cff,#8a6bff);color:#fff;border-color:transparent}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13.5px}
+  th,td{padding:10px 8px;text-align:center;border-bottom:1px solid var(--line)}
+  th{color:var(--mut);font-weight:600;font-size:12px;letter-spacing:.5px}
+  td.num{font-family:Consolas,monospace;font-weight:600;letter-spacing:.5px}
+  td.num.clickable{cursor:pointer;color:var(--acc);transition:background .15s,text-shadow .15s}
+  td.num.clickable:hover{background:var(--panel-2);text-shadow:0 0 8px var(--acc)}
+  td.num.clickable::after{content:"⤵";opacity:.5;margin-left:5px;font-size:11px}
+  .tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin-top:10px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .typeline{margin-top:5px}
+  .trend{position:relative;height:48px;margin-top:8px;font-size:10px}
+  .taxis{position:absolute;left:0;right:0;top:17px;height:3px;border-radius:2px;background:var(--line)}
+  .ttick{position:absolute;top:8px;width:2px;height:22px;background:var(--mut);opacity:.55;transform:translateX(-1px)}
+  .tlab{position:absolute;top:31px;transform:translateX(-50%);color:var(--mut);white-space:nowrap}
+  .tseg{position:absolute;top:12px;height:11px;border-radius:3px;min-width:2px;transition:width .2s;box-shadow:0 0 6px rgba(0,0,0,.25)}
+  .tcap{font-size:11px;color:var(--mut);margin-top:10px;opacity:.85}
+  select#profession{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;color:var(--txt);
+    padding:6px 10px;font-size:13px;outline:none;cursor:pointer}
+  select#profession:focus{border-color:var(--acc)}
+  select#profession option{background:#0c0f1a;color:#fff}
+  details{margin-top:18px}
+  summary{cursor:pointer;color:var(--acc);font-size:13px;font-weight:600}
+  .badge-best{background:linear-gradient(135deg,#3ecf8e,#5bd1b8);color:#04231a;white-space:nowrap}
+  h4.grp{font-size:14px;margin:4px 0 6px;font-weight:600;color:var(--txt)}
+  h4.grp.x{color:var(--xiong)}
+  table.ref{table-layout:fixed;width:100%}
+  table.ref th,table.ref td{text-align:left;vertical-align:top}
+  table.ref th:nth-child(1),table.ref td:nth-child(1){width:12%}
+  table.ref th:nth-child(2),table.ref td:nth-child(2){width:16%}
+  table.ref th:nth-child(3),table.ref td:nth-child(3){width:38%}
+  table.ref th:nth-child(4),table.ref td:nth-child(4){width:34%}
+  table.ref td.arr{font-family:"SFMono-Regular",Consolas,monospace;font-size:13px;white-space:nowrap}
+  table.ref td.yi{font-size:13.5px;color:var(--mut);line-height:1.8;word-break:break-word}
+  table.ref td.yi.pos{color:#bdf0cf;background:rgba(62,207,142,.08);border-left:3px solid var(--ji);padding-left:9px}
+  .flow-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .flow-item{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:140px}
+  .flow-item .yr{font-size:11px;color:var(--mut)}
+  .flow-item .st{font-weight:600;font-size:14px;margin:2px 0}
+  input#flowPhone{flex:1;min-width:200px;background:var(--panel-2);border:1px solid var(--line);
+    border-radius:10px;color:var(--txt);padding:10px 12px;font-size:14px;
+    font-family:"SFMono-Regular",Consolas,monospace;outline:none}
+  input#flowPhone:focus{border-color:var(--acc)}
+  input#flowBase,input#flowYear{width:118px;background:var(--panel-2);border:1px solid var(--line);
+    border-radius:10px;color:var(--txt);padding:10px 12px;font-size:14px;outline:none}
+  input#flowBase:focus,input#flowYear:focus{border-color:var(--acc)}
+  .stepper{display:inline-flex;align-items:stretch;gap:0}
+  .stepper button{width:34px;padding:0;font-size:18px;line-height:1;border:1px solid var(--line);background:var(--panel-2);color:var(--txt);border-radius:10px;cursor:pointer}
+  .stepper button:hover{border-color:var(--acc);color:var(--acc)}
+  .stepper input#flowBase{border-radius:0;width:92px;text-align:center}
+  .flow-item.flow-hit{border-color:var(--acc);box-shadow:0 0 0 2px rgba(127,212,166,.55);background:rgba(127,212,166,.09)}
+  .flow-item.flow-hit .yr{color:var(--acc);font-weight:700}
+  .zhikou{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .zk{font-size:11.5px;line-height:1.5;padding:4px 9px;border-radius:8px;border:1px solid;font-weight:600;white-space:normal}
+  .zk.high{background:rgba(255,107,107,.16);color:#ff8f8f;border-color:rgba(255,107,107,.42)}
+  .zk.mid{background:rgba(255,180,84,.15);color:#ffc488;border-color:rgba(255,180,84,.42)}
+  .zk.info{background:rgba(91,140,255,.14);color:#9fb6ff;border-color:rgba(91,140,255,.4)}
+  .zhikou.main{margin-top:4px;padding-top:7px;border-top:1px dashed rgba(255,255,255,.16)}
+  .dial{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .dial span{font-size:11.5px;line-height:1.5;padding:4px 9px;border-radius:8px;border:1px solid;font-weight:600;white-space:normal}
+  .dial .pos{background:rgba(62,207,142,.15);color:#7fe6ad;border-color:rgba(62,207,142,.45)}
+  .dial .warn{background:rgba(255,180,84,.15);color:#ffc488;border-color:rgba(255,180,84,.42)}
+  .dial .info{background:rgba(91,140,255,.14);color:#9fb6ff;border-color:rgba(91,140,255,.4)}
+  /* —— 左侧快速引导栏 —— */
+  .layout{display:flex;gap:18px;align-items:flex-start;max-width:1300px;margin:0 auto}
+  .sidenav{position:sticky;top:28px;flex:0 0 168px;align-self:flex-start;
+    background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line);
+    border-radius:16px;padding:14px 12px;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+  .nav-title{font-size:12px;font-weight:700;letter-spacing:1px;opacity:.7;
+    padding:0 6px 10px;margin-bottom:8px;border-bottom:1px solid var(--line)}
+  .nav-btn{display:block;width:100%;text-align:left;cursor:pointer;
+    background:var(--panel-2);border:1px solid var(--line);border-radius:10px;
+    color:var(--txt);font-size:13.5px;font-weight:600;padding:9px 12px;margin-bottom:8px;
+    transition:.18s}
+  .nav-btn:hover{border-color:var(--acc);color:var(--acc);transform:translateX(2px)}
+  .nav-btn.active{border-color:transparent;background:linear-gradient(135deg,#5b8cff,#8a6bff);color:#fff}
+  .nav-nums{margin:6px 0 10px;max-height:46vh;overflow-y:auto;
+    display:flex;flex-direction:column;gap:6px;padding-right:2px}
+  .nav-nums::-webkit-scrollbar{width:5px}
+  .nav-nums::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  .nav-num{display:flex;align-items:center;justify-content:space-between;gap:6px;
+    cursor:pointer;background:rgba(91,140,255,.1);border:1px solid rgba(91,140,255,.32);
+    border-radius:9px;padding:7px 10px;font-family:Consolas,monospace;font-size:12.5px;
+    color:#eaf0ff;transition:.16s}
+  .nav-num:hover{border-color:var(--acc);background:rgba(91,140,255,.2);transform:translateX(2px)}
+  .nav-num .sc{font-size:10.5px;opacity:.7;font-weight:700}
+  .nav-empty{font-size:11.5px;opacity:.5;padding:4px 6px;line-height:1.5}
+  .wrap{flex:1;min-width:0;max-width:none}
+  @media(max-width:820px){
+    .layout{flex-direction:column}
+    .sidenav{position:static;flex:none;width:100%;order:-1}
+    .nav-nums{max-height:none}
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidenav" id="sidenav">
+    <div class="nav-title">快速导航</div>
+    <button class="nav-btn" id="navAdd">＋ 添加号码</button>
+    <button class="nav-btn" data-target="cards">号码分析</button>
+    <div id="navNums" class="nav-nums"></div>
+    <button class="nav-btn" data-target="sec-compare">号码排序</button>
+    <button class="nav-btn" data-target="sec-flow">流年流月</button>
+    <button class="nav-btn" data-target="sec-ref">数组速查</button>
+  </aside>
+  <div class="wrap">
+  <h1>七星绝学</h1>
+
+  <div class="glass">
+    <div class="row">
+      <input id="single" autocomplete="off" spellcheck="false" />
+      <button id="add">＋ 添加号码</button>
+    </div>
+    <div id="chipbar" class="chipbar"></div>
+    <div class="row" style="margin-top:12px;align-items:center">
+      <span style="font-size:13px;opacity:.8">阴阳定论：</span>
+      <label class="gen"><input type="radio" name="gender" value="x" checked> 不区分</label>
+      <label class="gen"><input type="radio" name="gender" value="m"> 男</label>
+      <label class="gen"><input type="radio" name="gender" value="f"> 女</label>
+    </div>
+    <div class="row" style="margin-top:10px;align-items:center">
+      <span style="font-size:13px;opacity:.8">职业匹配：</span>
+      <select id="profession">
+        <option value="all">通用（不区分）</option>
+        <option value="sales">销售 / 公关</option>
+        <option value="tech">技术 / 研发</option>
+        <option value="manage">管理 / 体制</option>
+        <option value="creative">创意 / 策划</option>
+        <option value="startup">创业 / 投资</option>
+      </select>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button id="run">号码分析</button>
+      <button id="clear" class="ghost">清空</button>
+      <button id="compBtn" class="btn-s" title="默认仅采用该流派系统评分；点击开启后，改用行业通用派（主流）评分权重，不再参考该流派规则">主流评分法（关）</button>
+      <button id="sortBtn" class="btn-s" title="分析模块：按综合评分从高到低（降序）；再次点击取消排序">降序排列</button>
+      <button id="revBtn" class="btn-s" title="分析模块：按综合评分从低到高（升序）；再次点击取消排序">升序排列</button>
+    </div>
+  </div>
+
+  <div id="cards" class="cards"></div>
+
+  <div class="glass" style="margin-top:18px" id="sec-compare">
+    <h3 class="sec">号码排序
+      <select id="sortField">
+        <option value="评分">通用评分</option>
+        <option value="sales">销售 / 公关</option>
+        <option value="tech">技术 / 研发</option>
+        <option value="manage">管理 / 体制</option>
+        <option value="creative">创意 / 策划</option>
+        <option value="startup">创业 / 投资</option>
+      </select>
+      <button id="sortToggle" class="btn-s active">↓ 降序排列</button>
+      <span style="width:1px;height:18px;background:var(--line);margin:0 4px;display:inline-block"></span>
+      <button id="gX" class="btn-s active">不区分</button>
+      <button id="gM" class="btn-s">男命</button>
+      <button id="gF" class="btn-s">女命</button>
+    </h3>
+    <div style="overflow-x:auto">
+      <table id="table">
+        <thead><tr>
+          <th style="width:64px"></th><th>号码</th><th>吉</th><th>凶</th><th>中</th><th>天医(财)</th>
+          <th>凶星</th><th>类型</th><th>综合</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--ji)"></i>吉（生气/天医/延年）</span>
+      <span><i class="dot" style="background:var(--zhong)"></i>中（伏位）</span>
+      <span><i class="dot" style="background:var(--xiong)"></i>凶（绝命/祸害/六煞/五鬼）</span>
+    </div>
+  </div>
+
+  <div class="glass" style="margin-top:18px" id="sec-flow">
+    <h3 class="sec">流年 · 流月 读法 <span class="meta" style="font-size:12px">（相邻两位 = 一年）</span></h3>
+    <div class="row">
+      <input id="flowPhone" placeholder="输入一个手机号看流年" autocomplete="off" spellcheck="false" />
+      <div class="stepper">
+        <button id="baseMinus" class="ghost" type="button" title="起始年 −1">−</button>
+        <input id="flowBase" type="number" placeholder="起始年" title="后8位第1段对应的真实年份（默认今年）" />
+        <button id="basePlus" class="ghost" type="button" title="起始年 ＋1">＋</button>
+      </div>
+      <input id="flowYear" type="number" placeholder="查某年(可选)" title="输入任意年份，定位该年磁场" />
+      <button id="flowBtn">看流年</button>
+      <button id="flowMonth" class="ghost">看流月</button>
+    </div>
+    <div id="flowOut" class="flow-list"></div>
+    <div class="meta" style="margin-top:8px;font-size:12px">说明：将号码后 8 位从左到右两两截取，每对对应一年（或一月）所走磁场；含 0/5 的年份标注为伏位/夹星。<b>「起始年」=后8位第1段对应的真实年份</b>（留空默认今年），流年即按「起始年+n」标注真实日历年份；<b>「查某年」可定位任意年份</b>（超出号码覆盖段则循环回看）。流月为该年起的 12 个月循环。</div>
+  </div>
+
+  <details class="glass" id="sec-ref">
+    <summary>八星数组快查表</summary>
+    <h4 class="grp">四吉星</h4>
+    <div style="overflow-x:auto">
+      <table class="ref">
+        <thead><tr><th>星</th><th>数组</th><th>寓意 / 缺点</th></tr></thead>
+        <tbody>
+          <tr><td><b>生气</b>（贵人星）</td><td class="arr">14、28、39、67</td><td class="yi"><b>性格</b>：贵人多、人缘好、乐观，太佛系缺主见。<b>事业</b>：服务业、贵人助财。<b>感情</b>：随缘甜蜜。<b>健康</b>：肠胃。</td></tr>
+          <tr><td><b>天医</b>（财星）</td><td class="arr">13、27、49、68</td><td class="yi"><b>性格</b>：聪明善解人意，心软易被骗。<b>事业</b>：金融/保险/文艺/销售。<b>感情</b>：正桃花，过多易婚外情。<b>健康</b>：血压、血液循环。</td></tr>
+          <tr><td><b>延年</b>（事业星）</td><td class="arr">19、26、34、78</td><td class="yi"><b>性格</b>：领导责任心强，强势固执压力大。<b>事业</b>：管理/技术岗、守财。<b>感情</b>：专一但霸道。<b>健康</b>：心脏、头发、失眠。</td></tr>
+          <tr><td><b>伏位</b>（延续）</td><td class="arr">11、22、33、44、66、77、88、99</td><td class="yi"><b>性格</b>：耐心谨慎，被动保守拖延。<b>事业</b>：保守待机、稳定求财。<b>感情</b>：非自愿结婚。<b>健康</b>：心脏、脑部。</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h4 class="grp x" style="margin-top:14px">四凶星</h4>
+    <div style="overflow-x:auto">
+      <table class="ref">
+        <thead><tr><th>星</th><th>数组</th><th>寓意 / 缺点</th><th>正面能力 / 才华</th></tr></thead>
+        <tbody>
+          <tr><td><b>绝命</b></td><td class="arr">12、37、48、69</td><td class="yi"><b>性格</b>：敢闯敢拼眼光激进，冲动大起大落。<b>事业</b>：风险/独干、易破财踩坑。<b>感情</b>：难有结果、离婚率高。<b>健康</b>：肝肾、糖尿病、泌尿。</td><td class="yi pos"><b>魄力·投资·闯劲</b>：企图心强、思维敏捷、讲义气、敢赌敢拼；创业者/投资人正需要这份"敢"——缺了它反而平庸保守。</td></tr>
+          <tr><td><b>五鬼</b></td><td class="arr">18、24、36、79</td><td class="yi"><b>性格</b>：脑洞大灵活，多疑变动睡眠差。<b>事业</b>：艺术/贸易/暗财。<b>感情</b>：三角恋、异地恋、外遇。<b>健康</b>：心脏血液、血光、免疫力。</td><td class="yi pos"><b>才华·变通·创意</b>：反应快、鬼点子多、学习力强、拿暗财红包；策划/设计/艺术/贸易的灵感源，变动型行业赖以生存。</td></tr>
+          <tr><td><b>六煞</b></td><td class="arr">16、29、38、47</td><td class="yi"><b>性格</b>：情商高八面玲珑，感情纠结情绪内耗。<b>事业</b>：服务/美容/中介。<b>感情</b>：偏桃花、三角关系。<b>健康</b>：皮肤、肠胃、抑郁。</td><td class="yi pos"><b>情商·人际·偏财</b>：交际强、异性缘旺、会打扮、左右逢源；服务/公关/中介的生财之本，建立在人脉上的机会。</td></tr>
+          <tr><td><b>祸害</b></td><td class="arr">17、23、46、89</td><td class="yi"><b>性格</b>：口才好，脾气差爱面子小人。<b>事业</b>：销售/老师/餐饮（以口为业）。<b>感情</b>：花言巧语易争吵。<b>健康</b>：口腔、淋巴、呼吸、意外伤。</td><td class="yi pos"><b>口才·表达·业务</b>：舌灿莲花、让人信服、以口为业；销售/讲师/律师的核心竞争力，业绩靠这张嘴。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <details class="glass">
+    <summary>铁口直断短语库（后八位 / 尾号 即查即断）</summary>
+    <div class="meta" style="font-size:12.5px;margin-bottom:6px">位置铁律：<b>开头=想法 · 中间=过程 · 尾数=结果</b>；后四位能量占比约 70%，<b>结尾定结局</b>。以下按"夹0夹5逐星"读号法提炼。</div>
+    <h4 class="grp">八星一句话铁口</h4>
+    <div style="overflow-x:auto">
+      <table class="ref">
+        <thead><tr><th>星</th><th>一句话铁口</th></tr></thead>
+        <tbody>
+          <tr><td><b>天医</b></td><td class="yi">主财、主婚、业绩好；聪明但没主见、单纯易骗</td></tr>
+          <tr><td><b>延年</b></td><td class="yi">能力事业守财；强势固执劳碌</td></tr>
+          <tr><td><b>生气</b></td><td class="yi">贵人随缘懒散、老板潜质；企图心不强</td></tr>
+          <tr><td><b>伏位</b></td><td class="yi">等待延续、固执、慢性病隐性病</td></tr>
+          <tr><td><b>绝命</b></td><td class="yi">投资破财脾气暴、肝肾、讲义气敢赌</td></tr>
+          <tr><td><b>五鬼</b></td><td class="yi">变动血光、三角恋熬夜暗财；第一大凶星</td></tr>
+          <tr><td><b>六煞</b></td><td class="yi">偏桃花忧郁、口舌异性缘情绪</td></tr>
+          <tr><td><b>祸害</b></td><td class="yi">口舌病痛官非、祸从口出</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h4 class="grp x" style="margin-top:12px">尾号铁口（最高优先级）</h4>
+    <div style="overflow-x:auto">
+      <table class="ref">
+        <thead><tr><th>尾号情形</th><th>铁口断语</th></tr></thead>
+        <tbody>
+          <tr><td class="arr">0 / 05·50</td><td class="yi">一场空——事业/财运/感情/健康四空必有一空</td></tr>
+          <tr><td class="arr">0≥2</td><td class="yi">耗泄元气、疲劳开刀、为别人做嫁衣</td></tr>
+          <tr><td class="arr">5≥2</td><td class="yi">拖延阻碍、凡事坎坷</td></tr>
+          <tr><td class="arr">绝命尾</td><td class="yi">100%判凶，财来财去做嫁衣、不利子女</td></tr>
+          <tr><td class="arr">五鬼尾</td><td class="yi">第一大凶星，婚败分居守不住财，绝对不可用</td></tr>
+          <tr><td class="arr">祸害尾</td><td class="yi">祸从口出官非；117重、23/32弱</td></tr>
+          <tr><td class="arr">延年尾(19/91)</td><td class="yi">守财奴吝啬；女命19累到最后一场空</td></tr>
+          <tr><td class="arr">天医尾</td><td class="yi">能赚能花、桃花旺</td></tr>
+          <tr><td class="arr">生气尾</td><td class="yi">懒散老板潜质、贵人多</td></tr>
+          <tr><td class="arr">六煞尾</td><td class="yi">爱美异性缘旺偏桃花、男人破婚</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h4 class="grp x" style="margin-top:12px">特定凶组铁口</h4>
+    <div style="overflow-x:auto">
+      <table class="ref">
+        <thead><tr><th>组合</th><th>铁口断语</th></tr></thead>
+        <tbody>
+          <tr><td class="arr">绝命+五鬼<br><span class="muted">218/812/2018…</span></td><td class="yi">宇宙最大凶数——事业感情财运健康全败、重疾</td></tr>
+          <tr><td class="arr">五鬼+六煞<br><span class="muted">618/816</span></td><td class="yi">婚姻有变、婚外情三角恋</td></tr>
+          <tr><td class="arr">祸害+五鬼<br><span class="muted">718/817/71…</span></td><td class="yi">飞来横祸大凶、血光意外</td></tr>
+          <tr><td class="arr">天医夹0<br><span class="muted">103/301/608/806</span></td><td class="yi">用三年以上必现婚外情/地下情</td></tr>
+          <tr><td class="arr">女用延年破婚号</td><td class="yi">19/91/159/951/87/78/857/758 等：强势压夫婚姻危机</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+</div>
+
+<script>
+const STARS = {
+  '生气':{n:'吉',p:['14','41','28','82','39','93','67','76']},
+  '天医':{n:'吉',p:['13','31','27','72','49','94','68','86']},
+  '延年':{n:'吉',p:['19','91','26','62','34','43','78','87']},
+  '伏位':{n:'中',p:['11','22','33','44','66','77','88','99']},
+  '绝命':{n:'凶',p:['12','21','37','73','48','84','69','96']},
+  '祸害':{n:'凶',p:['17','71','23','32','46','64','89','98']},
+  '六煞':{n:'凶',p:['16','61','29','92','38','83','47','74']},
+  '五鬼':{n:'凶',p:['18','81','24','42','36','63','79','97']},
+};
+// 权重：天医(正财)最高、绝命(大忌)最重罚；其余按吉凶与能量大小排序
+const WEIGHT = {'天医':12,'生气':7,'延年':6,'伏位':2,'绝命':-12,'五鬼':-6,'祸害':-6,'六煞':-5};
+// 主流评分法（行业通用派）权重：与该流派系统完全不同，不参考其大忌/制化/物极必反规则
+const WEIGHT_MAIN = {'天医':13,'生气':8,'延年':9,'伏位':3,'绝命':-13,'五鬼':-9,'祸害':-7,'六煞':-7};
+// 大小能量：同星不同数组能量递减（天医13/31最大、72/27最小）。序位→倍率
+const ENERGY_ORDER = {
+  '天医':['13','31','68','86','49','94','27','72'],
+  '延年':['19','91','78','87','34','43','26','62'],
+  '生气':['14','41','67','76','93','39','28','82'],
+  '绝命':['12','21','69','96','84','48','73','37'],
+  '祸害':['17','71','89','98','64','46','32','23'],
+  '六煞':['16','61','74','47','38','83','29','92'],
+  '五鬼':['18','81','97','79','63','36','24','42'],
+};
+const ENERGY_W = [1,1,0.85,0.85,0.7,0.7,0.55,0.55];
+// 大小能量四档（先天八卦/河图定阴阳强弱）：吉星以阳档论、凶星以阴档论
+const SIZE_LEVEL = {
+  '13':'极阳','31':'极阳','68':'中阳','86':'中阳','49':'弱阳','94':'弱阳','27':'弱阴','72':'弱阴',
+  '19':'极阳','91':'极阳','78':'中阳','87':'中阳','34':'弱阳','43':'弱阳','26':'弱阴','62':'弱阴',
+  '14':'极阳','41':'极阳','67':'中阳','76':'中阳','93':'弱阳','39':'弱阳','28':'弱阴','82':'弱阴',
+  '12':'极阴','21':'极阴','69':'中阴','96':'中阴','84':'弱阴','48':'弱阴','73':'弱阳','37':'弱阳',
+  '18':'极阴','81':'极阴','97':'中阴','79':'中阴','63':'弱阴','36':'弱阴','24':'弱阳','42':'弱阳',
+  '16':'极阴','61':'极阴','74':'中阴','47':'中阴','38':'弱阴','83':'弱阴','92':'弱阳','29':'弱阳',
+  '17':'极阴','71':'极阴','89':'中阴','98':'中阴','64':'弱阴','46':'弱阴','32':'弱阳','23':'弱阳',
+};
+function match(p){
+  for(const k in STARS){ if(STARS[k].p.includes(p)) return {star:k,...STARS[k]}; }
+  return {star:'—',n:'?',p:[]};
+}
+function starAt(p){ const m=match(p); return m.star!=='—'?m.star:null; }
+// 三数成象（密训）：五鬼+天医=动脑暗财(＋)；天医+六煞=烂桃花/二次婚姻(－)
+const TRI_AN  = ['813','794','368','249','186','972','631','427'];
+const TRI_LIU = ['316','683','947','729','138','861','492','274'];
+// 0/5 位置注解与评分修正（参照《八极灵数》0和5磁场解析 + 夹0夹5逐星：首尾=伏位；中段夹星：0隐藏/5放大；双5拖延；0结尾一场空）
+function parseZeroFive(rest){
+  const notes=[]; let endZero=false, mid0=0, single5=0, paired5=false;
+  const hidden=[]; // 夹0隐藏的具体星 {tri, star}
+  const n=rest.length;
+  if(rest[n-1]==='0'){ endZero=true; notes.push('0结尾：忙来忙去一场空（财富/感情/事业/健康皆归零）'); }
+  for(let i=0;i<n;i++){
+    const d=rest[i];
+    if(d!=='0'&&d!=='5') continue;
+    const isFirst=i===0, isLast=i===n-1;
+    if(isFirst){ const lbl=d==='0'?'伏位(隐藏/延续)':'伏位(延续·凸显)'; notes.push(d+'在首→'+lbl); continue; }
+    if(d==='0'&&isLast) continue; // 结尾0已处理
+    const left=rest[i-1], right=rest[i+1];
+    const adjOk = left && right && left!=='0' && left!=='5' && right!=='0' && right!=='5';
+    if(d==='0'){
+      if(adjOk){ mid0++; const st=match(left+right).star; const isXiong=['绝命','五鬼','六煞','祸害'].includes(st);
+        notes.push( st!=='—' ? `${left}${d}${right}：${st}夹0隐藏（隐形磁场${isXiong?'，凶星更毒':''}）` : `${left}${d}${right}：伏位缓冲` );
+        if(st!=='—') hidden.push({tri:`${left}${d}${right}`, star:st});
+      } else { mid0++; notes.push(`${left||''}${d}${right||''}：空亡/伏位`); }
+    } else { // 5
+      if(rest[i-1]==='5' || rest[i+1]==='5') continue; // 连续5块内的5，由双5检测统一标注
+      if(adjOk){ single5++; const st=match(left+right).star;
+        notes.push( st!=='—' ? `${left}${d}${right}：${st}夹5凸显（能量放大一倍）` : `${left}${d}${right}：伏位凸显` );
+      } else { notes.push(`${left||''}${d}${right||''}：伏位凸显`); }
+    }
+  }
+  for(let i=0;i<n-1;i++){ if(rest[i]==='5'&&rest[i+1]==='5'){ paired5=true; notes.push('双5相连：能量拖延（财富/事业晚到，为凶）'); break; } }
+  return {notes,endZero,mid0,single5,paired5,hidden};
+}
+function analyze(raw){
+  const digits = raw.replace(/\D/g,'');
+  const rest = digits.slice(3);
+  const n = rest.length;
+  const core=[]; [...rest].forEach(c=>{ if(c!=='0'&&c!=='5') core.push(c); });
+  // 七星绝学（该流派正法）：后8位保留 0/5 不动，逐位滑动成 7 对（七星）；0/5 不删除，
+  // 作「伏位（首尾）/ 夹星（中间）」标记占满七星位置；仅真实八星参与评分统计
+  const slots=[];   // 全部位置（含夹星/伏位），用于展示七星恒为7位
+  const pairs=[];   // 仅真实八星（不含0/5），用于评分统计
+  for(let i=0;i<n-1;i++){
+    const a=rest[i], b=rest[i+1];
+    const m=match(a+b);
+    const tail=(i>=n-4);
+    const has05 = a==='0'||a==='5'||b==='0'||b==='5';
+    if(!has05 && m.star!=='—'){
+      slots.push({pair:a+b, star:m.star, n:m.n, tail, kind:'star'});
+      pairs.push({pair:a+b, star:m.star, n:m.n, tail});
+    } else if(has05){
+      const atHead = (i===0 && (a==='0'||a==='5'));
+      const atTail = (i===n-2 && (b==='0'||b==='5'));
+      const mid = (a==='0'||a==='5') ? a : b;
+      const isFu = atHead || atTail;
+      const kind = isFu ? 'fu' : (mid==='0'?'jia0':'jia5');
+      slots.push({pair:a+b, star:null, n:'中', tail, kind, mark:mid});
+    }
+  }
+  const codes = pairs.map(p=>({star:p.star,n:p.n,pair:p.pair}));
+  const counts={}; for(const k in STARS){ counts[k]=codes.filter(c=>c.star===k).length; }
+  const ji = codes.filter(c=>c.n==='吉').length;
+  const xiong = codes.filter(c=>c.n==='凶').length;
+  const zhong = codes.filter(c=>c.n==='中').length;
+  const cai = counts['天医'];
+  const xiongNames = [...new Set(codes.filter(c=>c.n==='凶').map(c=>c.star))];
+  const z0 = (rest.match(/0/g)||[]).length;
+  const z5 = (rest.match(/5/g)||[]).length;
+  const comps=[]; // 评分构成明细（可解释）
+  const W = useMainstream ? WEIGHT_MAIN : WEIGHT;
+  // 大小能量(同星数组能量递减) × 尾宫(后4位×1.3) 加权底座（主流评分法改用通用派权重）
+  let base=0;
+  pairs.forEach(p=>{
+    const order=ENERGY_ORDER[p.star];
+    const idx=order?order.indexOf(p.pair):-1;
+    const ew=(p.star==='伏位'||idx<0)?1:ENERGY_W[idx];
+    base += W[p.star]*ew*(p.tail?1.3:1);
+  });
+  base=Math.round(base*10)/10;
+  comps.push(`星权${base>0?'+':''}${base}(大小能量·尾宫)`);
+  // —— 0/5 磁场修正 ——
+  const zf = parseZeroFive(rest);
+  let factor=1;
+  if(!useMainstream){
+    // 该流派（夹0夹5逐星法）：5放大一倍、双5拖延、天医夹0财富暗、夹0隐藏凶星更毒
+    if(zf.single5>0){ const k=Math.pow(1.4,zf.single5); factor*=k; comps.push(`×${k.toFixed(2)}夹5放大×${zf.single5}(磁场放大一倍)`); }
+    if(zf.paired5){ factor*=0.7; comps.push('×0.70双5拖延'); }
+    zf.hidden.forEach(h=>{
+      if(['绝命','五鬼','六煞','祸害'].includes(h.star)){ comps.push(`−3 ${h.tri}夹0隐藏${h.star}更毒`); }
+      else if(h.star==='天医'){ factor*=0.9; comps.push('×0.90天医夹0财富暗'); }
+    });
+  } else {
+    // 主流评分法（行业通用派）：每枚0×0.7、每枚5×1.1（通用版能量强弱判别）
+    if(z0>0){ const k=Math.pow(0.7,z0); factor*=k; comps.push(`×${k.toFixed(2)}主流派0弱×${z0}`); }
+    if(z5>0){ const k=Math.pow(1.1,z5); factor*=k; comps.push(`×${k.toFixed(2)}主流派5强×${z5}`); }
+  }
+  const afterFactor = Math.round(base*factor*10)/10;
+  // —— 大忌 / 阴阳定论 / 三数成象 / 物极必反 ——（仅该流派系统启用；主流评分法不参考）
+  let penalty=0; const pn=[];
+  let tri=0; const tn=[];
+  let dyPenalty=0;
+  const tail2=rest.slice(-2);
+  const tailStar=starAt(tail2);
+  // —— 整体阴阳判定（0阴5阳；先天河图奇阳偶阴；吉星阳/凶星阴/伏位中）——
+  const digitYang=(rest.match(/[13579]/g)||[]).length;
+  const digitYin =(rest.match(/[02468]/g)||[]).length;
+  // 阴阳强弱等级：出现1个=弱、2个=中、3个=极、≥4个=物极必反（阴阳转化）
+  const dyLevel = digitYang>=4?'物极必反':(digitYang===3?'极':(digitYang===2?'中':'弱'));
+  const dxLevel = digitYin>=4?'物极必反':(digitYin===3?'极':(digitYin===2?'中':'弱'));
+  let yinYangType='阴阳平衡';
+  if(ji>=5 && xiong===0){ yinYangType='纯阳·物极必反'; }
+  else if(xiong>=5 && ji===0){ yinYangType='纯阴·孤阴不生'; }
+  else if(ji> xiong*2){ yinYangType='偏阳'; }
+  else if(xiong> ji*2){ yinYangType='偏阴'; }
+  if(!useMainstream){
+    // 该流派大忌号码硬性扣分
+    if(zf.endZero){ penalty-=15; pn.push('0结尾一场空−15'); }
+    if(tail2==='05'||tail2==='50'){ penalty-=8; pn.push('05/50结尾皆空−8'); }
+    if(tailStar==='绝命'){ penalty-=10; pn.push('绝命结尾破财号−10'); }
+    if(tailStar==='五鬼'){ penalty-=8; pn.push('五鬼结尾第一大凶−8'); }
+    if(tailStar==='六煞'){ penalty-=5; pn.push('六煞结尾男人破婚−5'); }
+    if(tailStar==='祸害'){ penalty-=6; pn.push('祸害结尾口舌官非−6'); }
+    if(z0>=2){ penalty-=8; pn.push('0≥2变数多−8'); }
+    ['103','301','608','806'].forEach(p=>{ if(rest.includes(p)){ penalty-=8; pn.push(`${p}天医夹0婚变−8`); }});
+    // 阴阳定论（性别极性）
+    if(gender!=='x'){
+      const yang=(rest.match(/[1357]/g)||[]).length;
+      const yin=(rest.match(/[2468]/g)||[]).length;
+      if(gender==='f' && yang>=5){ penalty-=6; pn.push('女用阳号(男化)−6'); }
+      if(gender==='m' && yin>=5){ penalty-=6; pn.push('男用阴号(女化)−6'); }
+      if(gender==='f'){
+        const broken=['19','91','87','78','109','901','159','951','857','758'];
+        if(broken.some(p=>rest.includes(p))){ penalty-=8; pn.push('女用延年破婚号−8'); }
+      }
+    }
+    // 三数成象
+    for(let i=0;i<rest.length-2;i++){
+      const t=rest.slice(i,i+3);
+      if(TRI_AN.includes(t)){ tri+=5; tn.push(`${t}暗财偏财+5`); }
+      if(TRI_LIU.includes(t)){ tri-=6; tn.push(`${t}天医+六煞烂桃花−6`); }
+    }
+    // 物极必反（纯阳/纯阴）
+    if(yinYangType==='纯阳·物极必反'){ dyPenalty-=10; pn.push('全吉星=纯阳过刚·物极必反−10'); dyPenalty-=6; pn.push('全吉缺冲劲·留不住财−6'); }
+    else if(yinYangType==='纯阴·孤阴不生'){ dyPenalty-=10; pn.push('全凶星=纯阴不生·孤阴不生−10'); }
+  } else {
+    // 主流评分法·通用忌讳（不参考该流派大忌/破婚/物极必反等规则）
+    if(zf.endZero){ penalty-=5; pn.push('0结尾能量收束−5'); }
+    if(tailStar==='绝命'||tailStar==='五鬼'||tailStar==='六煞'||tailStar==='祸害'){ penalty-=4; pn.push('尾凶偏低−4'); }
+    if(z0>=2){ penalty-=4; pn.push('0≥2偏弱−4'); }
+  }
+  penalty += dyPenalty;
+  // —— 大小能量四档分布 ——
+  const levelCount={};
+  pairs.forEach(p=>{ const lv=SIZE_LEVEL[p.pair]; if(lv) levelCount[lv]=(levelCount[lv]||0)+1; });
+  const levelStr = Object.keys(levelCount).length? Object.entries(levelCount).map(([k,v])=>`${k}×${v}`).join(' ') : '—';
+  // —— 多维加权评分（②~⑦）——
+  const cTian=counts['天医'], cYan=counts['延年'], cSheng=counts['生气'];
+  const cJue=counts['绝命'], cWu=counts['五鬼'], cHuo=counts['祸害'], cLiu=counts['六煞'];
+  // ② 结尾独立权重（定结局·双向加成）
+  let tailScore=0;
+  if(!zf.endZero && tail2!=='05' && tail2!=='50'){
+    if(tailStar==='天医'||tailStar==='延年'){ tailScore+=8; comps.push('尾吉(天医/延年)+8'); }
+    else if(tailStar==='生气'){ tailScore+=5; comps.push('尾生气+5'); }
+  }
+  // ③ 凶星能力正向分（凶星=能力；非结尾、非集中爆发才计）
+  const polSeq = pairs.map(p=>p.n);
+  let burst=false;
+  for(let i=0;i+2<polSeq.length;i++){ if(polSeq[i]==='凶'&&polSeq[i+1]==='凶'&&polSeq[i+2]==='凶'){ burst=true; break; } }
+  let capScore=0;
+  pairs.forEach(p=>{ if(p.n==='凶' && !p.tail && !burst){ capScore+=4; } });
+  if(capScore>20) capScore=20;
+  if(capScore>0) comps.push(`能力+${capScore}(凶星能力分)`);
+  // ④ 制化成功加分（仅该流派系统；主流评分法不计入）
+  let zhiScore=0;
+  if(!useMainstream){
+    if(cJue>0 && cTian>=cJue){ zhiScore+=6; comps.push('天医克绝命+6'); }
+    if(cLiu>0 && cYan>=cLiu){ zhiScore+=5; comps.push('延年压六煞+5'); }
+    if(cWu>0 && cSheng>0 && cTian>0 && cYan>0){ zhiScore+=6; comps.push('生气+天医+延年化五鬼+6'); }
+    if(cHuo>0 && cSheng>0 && cYan>0){ zhiScore+=4; comps.push('生气+延年化祸害+4'); }
+  }
+  // ⑧ 五行生克平衡（主流评分法专属·其他派别算法，来源 fyqyw 五行生克平衡法）
+  let wuxingScore=0;
+  if(useMainstream){
+    const wxMap={'1':'木','2':'木','3':'火','4':'火','5':'土','6':'土','7':'金','8':'金','9':'水','0':'水'};
+    const sheng={'木':'火','火':'土','土':'金','金':'水','水':'木'};
+    const ke={'木':'土','土':'水','水':'火','火':'金','金':'木'};
+    let gen=0, kee=0;
+    for(let i=0;i<rest.length-1;i++){
+      const a=wxMap[rest[i]], b=wxMap[rest[i+1]];
+      if(sheng[a]===b) gen++;
+      else if(ke[a]===b) kee++;
+    }
+    wuxingScore = gen*2 - kee*2;
+    const kinds=new Set(rest.split('').map(d=>wxMap[d])).size;
+    if(kinds>=4) wuxingScore+=4;
+    comps.push(`五行生克${wuxingScore>=0?'+':''}${wuxingScore}(生${gen}/克${kee}/类${kinds})`);
+  }
+  // ⑤ 连续格局（三吉成局 / 三凶爆发）
+  let patternScore=0, runJ=0, runX=0;
+  polSeq.forEach(p=>{
+    if(p==='吉'){ runJ++; runX=0; if(runJ===3) patternScore+=6; else if(runJ>3) patternScore+=2; }
+    else if(p==='凶'){ runX++; runJ=0; if(runX===3) patternScore-=8; else if(runX>3) patternScore-=3; }
+    else { runJ=0; runX=0; }
+  });
+  if(patternScore!==0) comps.push(`格局${patternScore>0?'+':''}${patternScore}`);
+  // ⑥ 阴阳平衡分
+  let balanceScore=0;
+  if(yinYangType==='阴阳平衡'){ balanceScore+=4; comps.push('阴阳平衡+4'); }
+  else if(yinYangType==='偏阳'||yinYangType==='偏阴'){ balanceScore-=2; comps.push('偏颇−2'); }
+  // ⑦ 职业匹配加分（因人而异）
+  let profScore=0;
+  if(profession && profession!=='all'){
+    const need={'sales':()=>cTian>0&&cSheng>0,'tech':()=>cYan>0&&counts['伏位']>0,'manage':()=>cYan>0,'creative':()=>cWu>0,'startup':()=>cJue>0&&cTian>0};
+    const plabel={'sales':'销售','tech':'技术','manage':'管理','creative':'创意','startup':'创业'};
+    if(need[profession]()){ profScore+=6; comps.push(`契合${plabel[profession]}+6`); }
+    else { profScore-=2; comps.push(`与${plabel[profession]}不匹配−2`); }
+  }
+  // 能量走势（早/中/晚 三段）
+  const seg=[0,0,0];
+  for(let i=0;i<n-1;i++){
+    const a=rest[i], b=rest[i+1];
+    if(a==='0'||a==='5'||b==='0'||b==='5') continue;
+    const m=match(a+b); if(m.star==='—') continue;
+    const order=ENERGY_ORDER[m.star]; const idx=order?order.indexOf(a+b):-1;
+    const ew=(m.star==='伏位'||idx<0)?1:ENERGY_W[idx];
+    const reg = i>=n-4 ? 2 : (i<2 ? 0 : 1);
+    seg[reg]+= W[m.star]*ew;
+  }
+  // 号码类型标签
+  let typeTag='平衡号';
+  const maxC=Math.max(cTian,cYan,cSheng,counts['伏位'],cJue,cWu,cHuo,cLiu);
+  if(zf.endZero||tailStar==='绝命'||tailStar==='五鬼'||pn.some(x=>x.indexOf('破婚')>=0)||xiong>ji+2) typeTag='风险号';
+  else if(xiong>=2 && zhiScore>0) typeTag='能力号';
+  else if(cTian===maxC && cTian>0) typeTag='财富号';
+  else if(cYan===maxC) typeTag='事业号';
+  else if(cSheng===maxC) typeTag='贵人号';
+  else if(counts['伏位']===maxC) typeTag='守成号';
+
+  // —— 制化提示（凶星可被哪些吉星化解）——
+  const zhihua=[];
+  if(counts['绝命']>0){
+    if(counts['天医']>=counts['绝命']) zhihua.push('天医可化解绝命');
+    else zhihua.push(`天医不足克绝命（差${counts['绝命']-counts['天医']}）`);
+  }
+  if(counts['六煞']>0){
+    if(counts['延年']>=counts['六煞']) zhihua.push('延年可压制六煞');
+    else zhihua.push(`延年不足压六煞（差${counts['六煞']-counts['延年']}）`);
+  }
+  if(counts['五鬼']>0) zhihua.push('五鬼需「生气+天医+延年」相连化解');
+  if(counts['祸害']>0) zhihua.push('祸害需「生气+延年/伏位」化解');
+
+  // —— 辩证点评（凶星非凶·吉星非吉·刚柔并济，贴合实战体系）——
+  const dialectic=[];
+  if(ji>=5 && xiong===0){
+    dialectic.push({t:'全吉≠好：全吉星=全阳过刚，物极必反以凶论；且缺绝命的魄力/投资闯劲、缺五鬼的才华变动、缺祸害的口才业务——易安于现状、求稳保守、留不住财（多天医欲望过强反留不住、多延年压力大固执、多生气太懒招小人）。需适当凶星点睛。',l:'warn'});
+  }
+  if(xiong>=5 && ji===0){
+    dialectic.push({t:'全凶≠全坏：纯阴孤阴不生、物极必反；但凶星=能力——绝命魄力、五鬼才华、六煞情商、祸害口才，全凶者往往行动力/才华极强，只起伏大，须吉星制衡（天医克绝命、延年压六煞）方成事。',l:'warn'});
+  }
+  if(xiong>0 && ji>0){
+    const bal = counts['天医']+counts['延年']+counts['生气'];
+    if(bal>=xiong) dialectic.push({t:'凶星得用·刚柔并济：凶星带来的魄力/才华/情商/口才被吉星制衡，化险为夷——正是该体系推崇的「吉凶搭配、各得其所」，号码有冲劲也有保障。',l:'pos'});
+    else dialectic.push({t:'凶星偏重：能力有余、安稳不足，宜补吉星（天医/延年/生气）稳定情绪与运势。',l:'info'});
+  }
+  if(ji>0 && xiong>0 && yinYangType==='阴阳平衡'){
+    dialectic.push({t:'吉凶兼具、阴阳平衡，符合「刚柔并济」——好号不在全吉，而在各得其所、因人而异（行业/性别/阶段）。',l:'pos'});
+  }
+
+  const score = Math.round((afterFactor + penalty + tri + tailScore + capScore + zhiScore + patternScore + balanceScore + profScore + wuxingScore)*10)/10;
+  let grade = score>=50?'优':(score>=30?'良':'平');
+  if(yinYangType.indexOf('纯阳')>=0 && grade==='优') grade='良'; // 全吉≠全好：纯阳过刚、缺冲劲，封顶"良"
+  const notes=[...zf.notes];
+  if(pn.length) notes.push((useMainstream?'⚠通用忌讳：':'⚠大忌：')+pn.join('；'));
+  if(tn.length) notes.push('三数成象：'+tn.join('；'));
+  // —— 短语分体系：该流派短语默认显示；主流派短语仅在开启主流评分法时追加（该流派短语保留）——
+  const zhikouXG = buildZhikouXG({rest,endZero:zf.endZero,z0,z5,paired5:zf.paired5,notes,yinYangType});
+  const zhikouMain = useMainstream ? buildZhikouMain(rest, wuxingScore, z0, z5, tailStar, zf.endZero, yinYangType) : [];
+  return {raw:digits,rest,skipped:[...rest].filter(c=>c==='0'||c==='5').join('')||'无',core:core.join(''),slots,codes,ji,xiong,zhong,cai,
+          xiongNames,score,base,z0,z5,grade,counts,notes,comps,endZero:zf.endZero,paired5:zf.paired5,
+          levelStr,digitYang,digitYin,dyLevel,dxLevel,yinYangType,zhihua,dialectic,
+          tailScore,capScore,zhiScore,patternScore,balanceScore,profScore,typeTag,seg,zhikouXG,zhikouMain};
+}
+const STAR_DESC={'天医':'正财·正桃花','延年':'事业·能力','生气':'贵人·乐天','伏位':'稳定·蓄力','绝命':'冲动·破财','五鬼':'变动·血光','六煞':'偏桃花·情绪','祸害':'口舌·是非'};
+// 能量走势：一条固定长度横线 + 四个刻度分出早/中/晚三段区间，按长短(能量强弱)与好坏(绿吉红凶)着色
+function trendChart(seg){
+  const maxAbs=Math.max(1,...seg.map(Math.abs));
+  const labels=['早','中','晚'];
+  let bars='';
+  seg.forEach((v,i)=>{
+    const left=i*100/3;                                   // 该区间左边界（刻度位置）
+    const w=Math.max(2,(Math.abs(v)/maxAbs)*(100/3)*0.9); // 区间内条长∝能量强弱
+    const col=v>=0?'var(--ji)':'var(--xiong)';            // 绿=吉(正向) 红=凶(负向)
+    bars+=`<div class="tseg" style="left:${left+1}%;width:${w}%;background:${col}" title="${labels[i]}段能量 ${Math.round(v*10)/10}"></div>`;
+  });
+  let ticks=''; for(let i=0;i<4;i++) ticks+=`<div class="ttick" style="left:${i*100/3}%"></div>`;
+  let labs=''; labels.forEach((l,i)=>{ labs+=`<div class="tlab" style="left:${i*100/3+100/6}%">${l}</div>`; });
+  return `<div class="trend"><div class="taxis"></div>${ticks}${bars}${labs}</div>`;
+}
+// 铁口直断短语库（该流派·默认显示）：基于后八位 / 尾号 / 0-5 / 特定凶组 即查即断（夹0夹5逐星法）
+const BROKEN_F=['19','91','87','78','109','901','159','951','857','758'];
+function buildZhikouXG(r){
+  const zk=[]; const push=(t,l)=>zk.push({t,l:l||'info'});
+  const rest=r.rest, tail2=rest.slice(-2);
+  const st2=starAt(tail2);
+  // —— 尾号定结局（最高优先级）——
+  if(r.endZero) push('0结尾：万事一场空，四空必有一空','high');
+  else if(tail2==='05'||tail2==='50') push('05/50结尾：到头皆空，白忙一场','high');
+  else if(st2==='绝命') push('绝命结尾：财来财去做嫁衣，90%可断此号凶','high');
+  else if(st2==='五鬼') push('五鬼结尾：第一大凶星，婚败分居守不住财，绝对不可用','high');
+  else if(st2==='祸害'){
+    const strong=['17','71','89','98'].includes(tail2);
+    push(strong?'祸害结尾(强)：祸从口出、官非伤灾多':'祸害结尾(弱)：平时多争执，伤不大，谨言即可','mid');
+  }
+  else if(st2==='六煞') push('六煞结尾：异性缘旺偏桃花，男人易破婚','mid');
+  else if(st2==='延年'){
+    if(gender==='f'&&['19','91','87','78'].includes(tail2)) push('女用延年结尾：强势累己、易破婚','high');
+    else push('延年结尾：守财奴、太吝啬，交往易吃亏','info');
+  }
+  else if(st2==='天医') push('天医结尾：能赚能花，桃花旺','info');
+  else if(st2==='生气') push('生气结尾：懒散有老板潜质，贵人多助','info');
+  // —— 0/5 铁口 ——
+  if(r.z0>=2) push('0≥2：耗泄元气，身体疲劳甚至开刀，多为别人做嫁衣','high');
+  if(r.z5>=2) push('5≥2：拖延阻碍多，凡事坎坷不顺','mid');
+  if(r.paired5) push('双5相连：能量拖延，财富事业晚到（为凶）','mid');
+  // 夹0藏凶 / 夹5放大（从 notes 提炼）
+  r.notes.forEach(n=>{
+    if(/夹0隐藏/.test(n)&&/凶星更毒/.test(n)) push('夹0藏凶：隐形磁场，凶星更毒（暗箭难防）','mid');
+    if(/夹5凸显/.test(n)) push('夹5放大：能量翻倍，吉凶皆放大','mid');
+  });
+  // —— 特定凶组直断（DANGER4 图标组合 + 滑动相邻检测）——
+  const DANGER4={
+    '218':'绝命+五鬼·宇宙最大凶数','812':'绝命+五鬼·宇宙最大凶数',
+    '2518':'绝命+五鬼·宇宙最大凶数','2158':'绝命+五鬼·宇宙最大凶数',
+    '8512':'绝命+五鬼·宇宙最大凶数','8152':'绝命+五鬼·宇宙最大凶数',
+    '2018':'绝命+五鬼·宇宙最大凶数','2108':'绝命+五鬼·宇宙最大凶数',
+    '8012':'绝命+五鬼·宇宙最大凶数','8102':'绝命+五鬼·宇宙最大凶数',
+    '618':'五鬼+六煞·婚外情三角恋','816':'五鬼+六煞·婚外情三角恋',
+    '718':'祸害+五鬼·飞来横祸','817':'祸害+五鬼·飞来横祸',
+    '7118':'祸害+五鬼·飞来横祸','8117':'祸害+五鬼·飞来横祸',
+    '8017':'祸害+五鬼·飞来横祸','7018':'祸害+五鬼·飞来横祸',
+    '7108':'祸害+五鬼·飞来横祸','8107':'祸害+五鬼·飞来横祸',
+    '7518':'祸害+五鬼·飞来横祸','8157':'祸害+五鬼·飞来横祸','8517':'祸害+五鬼·飞来横祸'
+  };
+  const sev=d=> (d.indexOf('最大凶数')>=0||d.indexOf('飞来横祸')>=0)?'high':'mid';
+  const seen=new Set();
+  Object.keys(DANGER4).forEach(k=>{ if(rest.includes(k)){ seen.add(k); push(`${k}：${DANGER4[k]}`, sev(DANGER4[k])); }});
+  for(let i=0;i<rest.length-2;i++){
+    const a=starAt(rest.slice(i,i+2)), b=starAt(rest.slice(i+1,i+3));
+    if(a&&b){
+      const tri=rest.slice(i,i+3); if(seen.has(tri)) continue;
+      if((a==='绝命'&&b==='五鬼')||(a==='五鬼'&&b==='绝命')){ seen.add(tri); push(`${tri}：绝命+五鬼·宇宙最大凶数`,'high'); }
+      else if((a==='五鬼'&&b==='六煞')||(a==='六煞'&&b==='五鬼')){ seen.add(tri); push(`${tri}：五鬼+六煞·婚外情三角恋`,'mid'); }
+      else if((a==='祸害'&&b==='五鬼')||(a==='五鬼'&&b==='祸害')){ seen.add(tri); push(`${tri}：祸害+五鬼·飞来横祸`,'high'); }
+    }
+  }
+  // —— 天医夹0婚变 ——
+  ['103','301','608','806'].forEach(p=>{ if(rest.includes(p)) push(`${p}：天医夹0，婚外情/地下情（用三年以上应验）`,'mid'); });
+  // —— 女用延年破婚号（与 analyze 扣分逻辑一致：后八位含延年破婚数组即判）——
+  if(gender==='f' && BROKEN_F.some(p=>rest.includes(p))) push('女用延年破婚号：强势压夫、婚姻危机','high');
+  // —— 整体阴阳铁口 ——
+  if(r.yinYangType.indexOf('纯阳')>=0) push('全吉星≠好：纯阳过刚、物极必反','mid');
+  else if(r.yinYangType.indexOf('纯阴')>=0) push('全凶星：孤阴不生，大凶','high');
+  else if(r.yinYangType==='偏阳') push('偏阳：阳气偏盛，宜配伏位踩刹车','info');
+  else if(r.yinYangType==='偏阴') push('偏阴：阴气偏重，宜补阳星','info');
+  return zk;
+}
+// 主流派短语库（仅开启主流评分法时追加显示；该流派短语保留）：基于通用派共识与已融合算法（五行生克/0-5/均衡观）
+function buildZhikouMain(rest, wuxingScore, z0, z5, tailStar, endZero, yinYangType){
+  const zk=[]; const push=(t,l)=>zk.push({t,l:l||'info'});
+  // 五行生克（主流专属维度·来源 fyqyw）
+  if(wuxingScore>0) push('五行生克平衡：磁场流转顺遂、能量互补（主流派）','info');
+  else if(wuxingScore<0) push('五行生克失衡：相邻数相克、能量内耗（主流派）','mid');
+  else push('五行中和：磁场无偏颇（主流派）','info');
+  // 通用派 0/5 解读（与主流评分法系数一致）
+  if(z0>0) push(`0弱×${z0}：能量收束、运势偏空（主流派）`, z0>=2?'mid':'info');
+  if(z5>0) push(`5强×${z5}：能量凸显、磁场放大（主流派）`, z5>=2?'mid':'info');
+  // 通用派尾宫
+  if(endZero) push('0结尾：能量收束、结局偏空（主流派）','mid');
+  else if(['绝命','五鬼','六煞','祸害'].includes(tailStar)) push('尾凶：结局偏低、主流派建议避用（主流派）','mid');
+  // 通用派均衡观（非该流派物极必反，而是"因人而异"）
+  if(yinYangType.indexOf('纯阳')>=0) push('全吉星：通用派认为未必吉祥、须结合命理因人而异（主流派）','mid');
+  else if(yinYangType.indexOf('纯阴')>=0) push('全凶星：磁场过刚易折、通用派主张阴阳调和（主流派）','mid');
+  // 伏位两面派（通用派共识：前吉延吉、前凶延凶，过多则保守）
+  const fuwei=(rest.match(/11|22|33|44|66|77|88|99/g)||[]).length;
+  if(fuwei>=2) push(`伏位×${fuwei}：保守被动、易纠结隐藏危机（主流派）`,'mid');
+  return zk;
+}
+function renderFlow(mode){
+  const phv=document.getElementById('flowPhone').value||numbers[0]||'';
+  let digits=phv.replace(/\D/g,'');
+  if(digits.length<8 && numbers[0]) digits=numbers[0].replace(/\D/g,'');
+  const rest=digits.slice(3);
+  const out=document.getElementById('flowOut'); out.innerHTML='';
+  if(rest.length<2){ out.innerHTML='<span class="meta">号码不足，请输入至少 11 位手机号</span>'; return; }
+  const thisYear=new Date().getFullYear();
+  const baseYear=parseInt(document.getElementById('flowBase').value,10);
+  const anchor=isNaN(baseYear)?thisYear:baseYear;
+  const qYear=parseInt(document.getElementById('flowYear').value,10);
+  const query=isNaN(qYear)?null:qYear;
+  const max = mode==='month'?12:Math.max(0,rest.length-1);
+  let html='';
+  for(let i=0;i<max;i++){
+    const a=rest[i%rest.length], b=rest[(i+1)%rest.length];
+    const m=match(a+b);
+    const name=m.star==='—'?'含0/5(伏位/夹星)':m.star;
+    const cls = m.n==='吉'?'ji':(m.n==='凶'?'xiong':'zhong');
+    const desc = m.star==='—' ? '伏位缓冲' : (STAR_DESC[m.star]||'');
+    let label, wrapNote='', isHit=false;
+    if(mode==='month'){
+      label=`${anchor}年第${i+1}月`;
+    }else{
+      const cal=anchor+i;
+      label=`${cal}年`;
+      if(query!==null){
+        const idx=query-anchor;            // 目标年相对第1段的下标
+        if(idx===i){ isHit=true; }
+        else if(max>0){
+          const wrapped=((idx%max)+max)%max; // 超范围循环
+          if(wrapped===i){ isHit=true; wrapNote='（循环）'; }
+        }
+      }
+    }
+    const hl=isHit?' flow-hit':'';
+    html+=`<div class="flow-item${hl}"><div class="yr">${label}　${a}${b}${wrapNote}</div><div class="st ${cls}">${name}</div><div class="meta" style="font-size:11px">${desc}</div></div>`;
+  }
+  out.innerHTML=html;
+  if(mode!=='month'){
+    const hitEl=out.querySelector('.flow-hit');
+    if(hitEl && hitEl.scrollIntoView) hitEl.scrollIntoView({block:'center',behavior:'smooth'});
+  }
+}
+
+function sortResults(results){
+  const arr=[...results];
+  // 排序选项：评分=按综合分；职业选项=先切换职业匹配权重，再按综合分排序（评分排序能力保留）
+  arr.sort((a,b)=> sortDir==='asc' ? a.score-b.score : b.score-a.score);
+  return arr;
+}
+function render(){
+  const results = numbers.map(analyze);
+  // 分析模块的卡片按 cardSortDir 排序（'none'=不排序，保持原添加顺序；与号码排序表的 sortDir 解耦）
+  const cardResults = cardSortDir==='none' ? results : [...results].sort((a,b)=> cardSortDir==='asc' ? a.score-b.score : b.score-a.score);
+  const cardsEl = document.getElementById('cards'); cardsEl.innerHTML='';
+  cardResults.forEach(r=>{
+    const chips = r.slots.map(s=>{
+      if(s.kind==='star'){
+        const cls = s.n==='吉'?'ji':(s.n==='凶'?'xiong':'zhong');
+        const ttl = STAR_DESC[s.star]||'';
+        return `<span class="chip ${cls}" title="${s.star}：${ttl}${s.tail?'（尾宫·能量最强）':''}"><b>${s.star}</b></span>`;
+      }
+      if(s.kind==='fu'){
+        return `<span class="chip fu" title="伏位（0/5在首尾：隐藏/延续·凸显）"><b>伏位</b><i>${s.mark}</i></span>`;
+      }
+      const lbl = s.kind==='jia0' ? '夹0' : '夹5';
+      const ttl = s.kind==='jia0' ? '夹0：隐藏/空亡（凶星更毒，吉星套牢）' : '夹5：凸显/放大（能量放大一倍）';
+      return `<span class="chip ${s.kind}" title="${ttl}"><b>${lbl}</b></span>`;
+    }).join('');
+    const gcls = r.grade==='优'?'s-good':(r.grade==='良'?'s-mid':'s-bad');
+    const zkXG = r.zhikouXG || [];
+    const zkMain = r.zhikouMain || [];
+    const zkHtml = zkXG.length ? `<div class="meta" style="margin-top:6px;font-size:12px;opacity:.85">铁口直断（该流派）：</div><div class="zhikou">${zkXG.map(z=>`<span class="zk ${z.l}">${z.t}</span>`).join('')}</div>` : '';
+    const zkMainHtml = zkMain.length ? `<div class="meta" style="margin-top:8px;font-size:12px;opacity:.85">主流派解读（主流评分法开启时补充）：</div><div class="zhikou main">${zkMain.map(z=>`<span class="zk ${z.l}">${z.t}</span>`).join('')}</div>` : '';
+    const diaHtml = r.dialectic && r.dialectic.length ? `<div class="meta" style="margin-top:6px;font-size:12px;opacity:.85">辩证点评：</div><div class="dial">${r.dialectic.map(d=>`<span class="${d.l}">${d.t}</span>`).join('')}</div>` : '';
+    const noteTxt = r.notes.length ? `<div class="meta" style="margin-top:8px">⚑ ${r.notes.join('；')}</div>` : '';
+    cardsEl.insertAdjacentHTML('beforeend',`
+      <div class="card" id="card-${r.raw}">
+        <div class="score ${gcls}">综合 ${r.score}（${r.grade}）</div>
+        <h3>${r.raw}</h3>
+        <div class="typeline"><span class="tag ${gcls}">${r.typeTag}</span></div>
+        <div class="tcap">能量走势（早→中→晚｜绿=吉 红=凶｜条越长能量越强）</div>${trendChart(r.seg)}
+        <div class="meta">核心数段（后8位）: ${(r.rest||'—').split('').join(' ')}</div>
+        <div class="chips">${chips||'<span class="meta">无有效星</span>'}</div>
+        <div class="meta" style="margin-top:10px">吉${r.ji} · 凶${r.xiong} · 中${r.zhong} ｜ 天医(财)×${r.cai} ｜ 夹星/伏位×${r.slots.filter(s=>s.kind!=='star').length}</div>
+        <div class="meta" style="margin-top:5px;font-size:12px;opacity:.85">大小能量：${r.levelStr}</div>
+        <div class="meta" style="margin-top:3px;font-size:12px;opacity:.85">阴阳：阳${r.digitYang}(${r.dyLevel}) · 阴${r.digitYin}(${r.dxLevel}) ｜ ${r.yinYangType}</div>
+        <div class="meta" style="margin-top:6px;font-size:12px;opacity:.85">评分构成：${r.comps.join('　')}</div>
+        <div class="meta" style="margin-top:3px;font-size:12px;opacity:.85">制化提示：${r.zhihua&&r.zhihua.length?r.zhihua.join('；'):'—'}</div>
+        ${zkHtml}
+        ${zkMainHtml}
+        ${diaHtml}
+        ${noteTxt}
+      </div>`);
+  });
+  const best = [...results].sort((a,b)=> b.score-a.score)[0];
+  const sorted = sortResults(results);
+  const tb = document.querySelector('#table tbody'); tb.innerHTML='';
+  sorted.forEach(r=>{
+    const gcls = r.grade==='优'?'s-good':(r.grade==='良'?'s-mid':'s-bad');
+    const isBest = r===best;
+    tb.insertAdjacentHTML('beforeend',`
+      <tr>
+        <td style="text-align:center">${isBest?'<span class="tag badge-best">通用评分最佳</span>':''}</td>
+        <td class="num clickable" title="点击填入流年/流月输入栏" onclick="fillFlow('${r.raw}')">${r.raw}</td>
+        <td style="color:var(--ji)">${r.ji}</td>
+        <td style="color:var(--xiong)">${r.xiong}</td>
+        <td style="color:var(--zhong)">${r.zhong}</td>
+        <td style="color:var(--ji);font-weight:700">${r.cai}</td>
+        <td>${r.xiongNames.length?r.xiongNames.join('、'):'—'}</td>
+        <td>${r.typeTag}</td>
+        <td><span class="tag ${gcls}">${r.grade} ${r.score}</span></td>
+      </tr>`);
+  });
+  renderNavNums(results);
+}
+// 左侧快速引导栏：实时生成号码列表（点击号码平滑滑到该卡片），并高亮当前导航
+function renderNavNums(results){
+  const box=document.getElementById('navNums');
+  if(!box) return;
+  if(!numbers.length){ box.innerHTML='<div class="nav-empty">尚无号码，先添加并分析</div>'; return; }
+  box.innerHTML = results.map(r=>`<div class="nav-num" data-raw="${r.raw}" title="点击平滑滑到该号码分析卡">
+      <span>${r.raw}</span><span class="sc">${r.score}</span></div>`).join('');
+  box.querySelectorAll('.nav-num').forEach(el=>{
+    el.onclick=()=>smoothTo('card-'+el.dataset.raw);
+  });
+}
+// 平滑滑动到目标（section 或 某号码卡片），数组速查需先展开 details
+function smoothTo(target){
+  if(target==='sec-ref'){ const d=document.getElementById('sec-ref'); if(d && !d.open) d.open=true; }
+  const el=document.getElementById(target);
+  // 高亮左侧按钮 / 号码项
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active', b.dataset.target===target));
+  let hitNum=null;
+  if(target.indexOf('card-')===0){
+    const raw=target.slice(5);
+    document.querySelectorAll('.nav-num').forEach(n=>{ const on=n.dataset.raw===raw; n.style.outline=on?'2px solid var(--acc)':''; if(on) hitNum=n; });
+    setTimeout(()=>{ document.querySelectorAll('.nav-num').forEach(n=>n.style.outline=''); },1400);
+  }
+  // 等待 details 展开 reflow 后再滚动，避免定位偏差
+  requestAnimationFrame(()=>{ if(el && el.scrollIntoView) el.scrollIntoView({behavior:'smooth',block:'start'}); });
+}
+document.querySelectorAll('.nav-btn').forEach(b=>{
+  b.onclick=()=>smoothTo(b.dataset.target);
+});
+// 侧栏「＋ 添加号码」功能按钮 → 平滑滚动到「添加号码」模块并聚焦
+const navAdd=document.getElementById('navAdd');
+function goAdd(){
+  single.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>{ try{single.focus();}catch(e){} },420);
+}
+if(navAdd){ navAdd.onclick=goAdd; }
+
+const single=document.getElementById('single');
+let numbers=['13034519113','16653314113','13296431386'];
+let sortDir='desc';        // 号码排序表（排序模块）的方向
+let cardSortDir='none';    // 分析模块（卡片）方向：'none'=不排序(默认) / 'desc' / 'asc'，可点同项取消
+let gender='x';
+let profession='all';
+let useMainstream=false; // 主流评分法：false=仅该流派系统评分；true=改用行业通用派（主流）评分权重，不再参考该流派规则
+document.querySelectorAll('input[name="gender"]').forEach(r=>{
+  r.addEventListener('change',e=>{ gender=e.target.value; syncGender(); render(); });
+});
+function syncGender(){
+  document.querySelectorAll('input[name="gender"]').forEach(r=>{ r.checked=(r.value===gender); });
+  ['x','m','f'].forEach(g=>{ const el=document.getElementById('g'+g.toUpperCase()); if(el) el.classList.toggle('active', gender===g); });
+}
+document.getElementById('gX').onclick=()=>{ gender='x'; syncGender(); render(); };
+document.getElementById('gM').onclick=()=>{ gender='m'; syncGender(); render(); };
+document.getElementById('gF').onclick=()=>{ gender='f'; syncGender(); render(); };
+document.getElementById('profession').addEventListener('change',e=>{
+  profession=e.target.value;
+  const ssel=document.getElementById('sortField');
+  if(ssel) ssel.value = (profession==='all')?'评分':profession;
+  render();
+});
+// 主流评分法：切换是否改用行业通用派（主流）评分权重（默认关闭=仅该流派系统）
+document.getElementById('compBtn').onclick=()=>{
+  useMainstream=!useMainstream;
+  const b=document.getElementById('compBtn');
+  b.classList.toggle('active',useMainstream);
+  b.textContent= useMainstream?'主流评分法（开）':'主流评分法（关）';
+  render();
+};
+function syncSortUI(){
+  // 分析模块（卡片）：顶部 降序排列 / 升序排列 控制（none=都不高亮）
+  const sBtn=document.getElementById('sortBtn');
+  const rBtn=document.getElementById('revBtn');
+  if(sBtn) sBtn.classList.toggle('active',cardSortDir==='desc');
+  if(rBtn) rBtn.classList.toggle('active',cardSortDir==='asc');
+  // 排序模块（号码排序表）：内部 升降序 切换控制，独立于分析模块
+  const desc = sortDir==='desc';
+  const tBtn=document.getElementById('sortToggle');
+  if(tBtn){ tBtn.textContent = desc ? '↓ 降序排列' : '↑ 升序排列'; tBtn.classList.add('active'); }
+}
+function renderChips(){
+  const bar=document.getElementById('chipbar');
+  bar.innerHTML = numbers.map((n,i)=>`<span class="chip"><b>${n}</b><span class="x" data-i="${i}" title="移除">×</span></span>`).join('');
+}
+function addNumbers(){
+  const raw=single.value;
+  if(!raw.trim()) return;
+  // 强分隔符：换行 / 逗号 / 分号 / 制表符（用于区分不同号码）
+  const fields=raw.split(/[\n;,]+/);
+  const out=[];
+  fields.forEach(f=>{
+    // 单字段内：去掉空格、横线、点等格式符 → 还原成完整号码
+    let digits=f.replace(/[\s\-.,]/g,'');
+    if(digits.length>13){
+      // 超长，疑似“空格分隔的批量”，按空格再拆
+      const parts=f.split(/\s+/).map(p=>p.replace(/\D/g,'')).filter(d=>d.length>=7);
+      if(parts.length>1) out.push(...parts);  // 确为空格分隔的多号
+      else out.push(digits);                  // 空格是号码内格式符，兜底合并为单号
+    } else if(digits.length>=7){
+      out.push(digits);
+    }
+  });
+  // 去重：已存在的先抽出，整批按原顺序前置到首位（最新添加的排最前，方便查看）
+  const seen=new Set(out);
+  const rest=numbers.filter(n=>!seen.has(n));
+  const incoming=[...new Set(out)];
+  numbers=incoming.concat(rest);
+  renderChips(); render();
+  single.value='';
+  single.focus();
+}
+document.getElementById('add').onclick=addNumbers;
+single.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); addNumbers(); }});
+document.getElementById('chipbar').addEventListener('click',e=>{
+  const x=e.target.closest('.x');
+  if(x){ numbers.splice(Number(x.dataset.i),1); renderChips(); render(); }
+});
+document.getElementById('run').onclick=render;
+document.getElementById('sortField').addEventListener('change',e=>{
+  const v=e.target.value;
+  profession = (v==='评分') ? 'all' : v;   // 评分=中性基线；职业项=切换职业匹配权重
+  const psel=document.getElementById('profession');
+  if(psel) psel.value=profession;
+  render();
+});
+document.getElementById('sortBtn').onclick=()=>{ cardSortDir = cardSortDir==='desc' ? 'none' : 'desc'; syncSortUI(); render(); };
+document.getElementById('revBtn').onclick=()=>{ cardSortDir = cardSortDir==='asc' ? 'none' : 'asc'; syncSortUI(); render(); };
+document.getElementById('sortToggle').onclick=()=>{ sortDir = sortDir==='desc'?'asc':'desc'; syncSortUI(); render(); };
+let lastFlowMode='year';
+// 点击综合对比表里的号码，快速填入流年/流月输入栏并刷新
+function fillFlow(num){
+  const e=document.getElementById('flowPhone');
+  if(!e) return;
+  e.value=num;
+  renderFlow(lastFlowMode||'year');
+}
+document.getElementById('flowBtn').onclick=()=>{lastFlowMode='year';renderFlow('year');};
+document.getElementById('flowMonth').onclick=()=>{lastFlowMode='month';renderFlow('month');};
+['flowBase','flowYear'].forEach(id=>{
+  const e=document.getElementById(id);
+  if(e) e.addEventListener('input',()=>renderFlow(lastFlowMode));
+});
+function stepBase(delta){
+  const e=document.getElementById('flowBase');
+  let y=parseInt(e.value,10);
+  if(isNaN(y)) y=new Date().getFullYear();
+  e.value=String(y+delta);
+  renderFlow(lastFlowMode);
+}
+document.getElementById('baseMinus').onclick=()=>stepBase(-1);
+document.getElementById('basePlus').onclick=()=>stepBase(1);
+document.getElementById('clear').onclick=()=>{
+  numbers=[];
+  renderChips();
+  document.getElementById('cards').innerHTML='';
+  document.querySelector('#table tbody').innerHTML='';
+  renderNavNums([]);   // 同步清空左侧「号码分析」下的实时号码列表
+  single.focus();
+};
+single.focus();
+renderChips();
+syncSortUI();
+syncGender();
+document.getElementById('flowPhone').value=numbers[0]||'';
+document.getElementById('flowBase').value=String(new Date().getFullYear());
+render();
+</script>
+</div>
+</body>
+</html>
