@@ -431,7 +431,7 @@ const JIA_DESC = {
 };
 function analyze(raw){
   const digits = raw.replace(/\D/g,'');
-  const rest = digits.slice(3);
+  const rest = digits.slice(-8); // 取后8位（从后往前数8位）；11位手机号与去前3位等价，更长输入自动截后8位
   const n = rest.length;
   const core=[]; [...rest].forEach(c=>{ if(c!=='0'&&c!=='5') core.push(c); });
   // 七星绝学（该流派正法）：后8位保留 0/5 不动，逐位滑动成 7 对（七星）；0/5 不删除，
@@ -822,7 +822,7 @@ function renderFlow(mode){
   const phv=document.getElementById('flowPhone').value||numbers[0]||'';
   let digits=phv.replace(/\D/g,'');
   if(digits.length<8 && numbers[0]) digits=numbers[0].replace(/\D/g,'');
-  const rest=digits.slice(3);
+  const rest=digits.slice(-8); // 流年图同样取后8位，与核心拆解一致
   const out=document.getElementById('flowOut'); out.innerHTML='';
   if(rest.length<2){ out.innerHTML='<span class="meta">号码不足，请输入至少 11 位手机号</span>'; return; }
   const thisYear=new Date().getFullYear();
